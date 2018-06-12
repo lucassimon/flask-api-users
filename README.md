@@ -6,7 +6,7 @@ Uma api com Flask Framework, MongoDB e autenticação JWT
 
 ## Roadmap
 
-* Capítulo 1: Introdução, configuração e Hello World
+* Capítulo 1: [Introdução, configuração e Hello World](https://www.lucassimon.com.br/2018/06/serie-api-em-flask---parte-1---introducao-configuracao-e-hello-world/)
 
 * Capítulo 2: Organizando as dependências e requerimentos
 
