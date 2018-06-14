@@ -1,0 +1,6 @@
+flake8==3.5.0
+pytest==3.6.1
+pytest-cov==2.5.1
+pytest-flask==0.10.0
+pytest-runner==4.2
+Faker==0.8.15
