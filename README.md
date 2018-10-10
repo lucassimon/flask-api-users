@@ -5,38 +5,41 @@ Uma api com Flask Framework, MongoDB e autenticação JWT
 
 
 ## Roadmap
+# flask-api-users
 
-* Capítulo 1: Introdução, configuração e Hello World
+Uma api com Flask Framework, MongoDB e autenticação JWT
 
-* Capítulo 2: Organizando as dependências e requerimentos
 
-* Capítulo 3: Configurando o pytest e nosso primeiro teste
 
-* Capítulo 4: Configurando o Makefile
+## Roadmap
 
-* Capítulo 5: Adicionando o MongoDB a API
+* Capítulo 1: [Introdução, configuração e Hello World](https://www.lucassimon.com.br/2018/06/serie-api-em-flask---parte-1---introducao-configuracao-e-hello-world/)
 
-* Capítulo 7: Padronizando retornos da API com jsonify
+* Capítulo 2: [Organizando as dependências e requerimentos](https://lucassimon.com.br/2018/06/serie-api-em-flask---parte-2---organizando-as-dependencias-e-requerimentos/)
 
-* Capítulo 8: Criando o modelo de usuários
+* Capítulo 3: [Configurando o pytest e nosso primeiro teste](https://lucassimon.com.br/2018/06/serie-api-em-flask---parte-3---configurando-o-pytest-e-nosso-primeiro-teste/)
 
-* Capítulo 8: Testando o modelo de usuários
+* Capítulo 4: [Configurando o Makefile](https://lucassimon.com.br/2018/06/serie-api-em-flask---parte-4---configurando-o-makefile/)
 
-* Capítulo 9: Adicionando o marshmallow
+* Capítulo 5: [Adicionando o MongoDB a API](https://lucassimon.com.br/2018/07/serie-api-em-flask---parte-5---mongodb/)
 
-* Capítulo 10: Criando um novo usuário com pytest
+* Capítulo 6: [Criando e testando nosso modelo de usuários](https://lucassimon.com.br/2018/10/serie-api-em-flask---parte-6---criando-e-testando-nosso-modelo-de-usuarios/)
 
-* Capítulo 11: Listando usuários
+* Capítulo 7: Criando e listando usuários
 
-* Capítulo 11: Buscando usuários
+* Capítulo 8: Adicionando o marshmallow
 
-* Capítulo 12: Editando um usuário
+* Capítulo 9: Padronizando retornos da API com jsonify
 
-* Capítulo 13: Deletando um usuário
+* Capítulo 10: Buscando usuários
 
-* Capítulo 14: Adicionando o JWT a API
+* Capítulo 11: Editando um usuário
 
-* Capítulo 15: Criando a app de autênticação por JWT
+* Capítulo 12: Deletando um usuário
 
-* Capítulo 16: Conclusão
+* Capítulo 13: Adicionando o JWT a API
+
+* Capítulo 14: Criando a app de autênticação por JWT
+
+* Capítulo 15: Conclusão
 
