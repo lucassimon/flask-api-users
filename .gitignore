@@ -21,3 +21,4 @@ venv/
 !.elasticbeanstalk/*.global.yml
 notes.md
 celerybeat-schedule
+.coverage
