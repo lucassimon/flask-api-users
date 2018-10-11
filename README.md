@@ -2,6 +2,8 @@
 
 Uma api com Flask Framework, MongoDB e autenticação JWT
 
+![coverage](./static/coverage.svg)
+
 
 
 ## Roadmap
