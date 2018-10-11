@@ -44,6 +44,8 @@ def client():
 def mongo(request, client):
 
     def fin():
+        from apps.users.models import User
+        User.objects.all().delete()
         print('\n[teardown] disconnect from db')
 
     fin()
