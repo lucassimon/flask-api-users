@@ -71,10 +71,10 @@ class SignUp(Resource):
             return resp_already_exists('Users', 'usuário')
 
         except ValidationError as e:
-            return resp_exception('Users', msg=MSG_INVALID_DATA, description=e)
+            return resp_exception('Users', msg=MSG_INVALID_DATA, description=e.__str__())
 
         except Exception as e:
-            return resp_exception('Users', description=e)
+            return resp_exception('Users', description=e.__str__())
 
         # Realizo um dump dos dados de acordo com o modelo salvo
         schema = UserSchema()
