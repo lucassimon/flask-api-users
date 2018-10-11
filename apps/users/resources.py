@@ -17,7 +17,7 @@ from apps.responses import (
     resp_data_invalid,
     resp_ok
 )
-from apps.messages import MSG_NO_DATA, MSG_PASSWORD_WRONG, MSG_INVALID_DATA
+from apps.messages import MSG_NO_DATA, MSG_PASSWORD_DIDNT_MATCH, MSG_INVALID_DATA
 from apps.messages import MSG_RESOURCE_CREATED
 
 # Local
@@ -44,7 +44,7 @@ class SignUp(Resource):
         # verifico através de uma função a senha e a confirmação da senha
         # Se as senhas não são iguais retorno uma respota inválida
         if not check_password_in_signup(password, confirm_password):
-            errors = {'password': MSG_PASSWORD_WRONG}
+            errors = {'password': MSG_PASSWORD_DIDNT_MATCH}
             return resp_data_invalid('Users', errors)
 
         # Desserialização os dados postados ou melhor meu payload
@@ -57,7 +57,8 @@ class SignUp(Resource):
         # Crio um hash da minha senha
         hashed = hashpw(password.encode('utf-8'), gensalt(12))
 
-        # Salvo meu modelo de usuário com a senha criptografada e email em lower case
+        # Salvo meu modelo de usuário com a senha criptografada e email
+        # em lower case
         # Qualquer exceção ao salvar o modelo retorno uma resposta em JSON
         # ao invés de levantar uma exception no servidor
         try:
@@ -67,7 +68,7 @@ class SignUp(Resource):
             model.save()
 
         except NotUniqueError:
-            return resp_already_exists('Users', 'fornecedor')
+            return resp_already_exists('Users', 'usuário')
 
         except ValidationError as e:
             return resp_exception('Users', msg=MSG_INVALID_DATA, description=e)
@@ -81,5 +82,5 @@ class SignUp(Resource):
 
         # Retorno 200 o meu endpoint
         return resp_ok(
-            'Users', MSG_RESOURCE_CREATED.format('Usuário'),  data=result.data,
+            'Users', MSG_RESOURCE_CREATED.format('Usuário'),  data=result.data
         )
