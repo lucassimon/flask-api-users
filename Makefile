@@ -26,6 +26,21 @@ clean-build:
 	rm --force --recursive dist/
 	rm --force --recursive *.egg-info
 
+setup:
+	@echo "---- Installing Python dependencies ----"
+	@pip install -r requirements/prod.txt --upgrade
+
+setup_dev:
+	@echo "---- Installing Python dependencies ----"
+	@pip install -r requirements/dev.txt --upgrade
+	@flake8 --install-hook git
+	@git config --bool flake8.strict true
+
+coverage:
+	@echo "---- Running tests coverage ----"
+	@pytest --cov=apps --color=yes tests/
+	@coverage-badge > static/coverage.svg
+
 isort:
 	sh -c "isort --skip-glob=.tox --recursive . "
 
@@ -33,7 +48,7 @@ lint: clean
 	flake8
 
 test: lint
-	pytest --verbose --color=yes $(TEST_PATH)
+	pytest --verbose --color=yes tests/
 
 run: test
 	python application.py
