@@ -48,7 +48,7 @@ lint: clean
 	flake8
 
 test: lint
-	pytest --verbose --color=yes tests/
+	@pytest --verbose --cov=apps --color=yes tests/
 
 run: test
 	python application.py
