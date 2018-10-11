@@ -25,21 +25,17 @@ Uma api com Flask Framework, MongoDB e autenticação JWT
 
 * Capítulo 6: [Criando e testando nosso modelo de usuários](https://lucassimon.com.br/2018/10/serie-api-em-flask---parte-6---criando-e-testando-nosso-modelo-de-usuarios/)
 
-* Capítulo 7: Criando e listando usuários
+* Capítulo 7: [Criando usuários](https://lucassimon.com.br/2018/10/serie-api-em-flask---parte-7---criando-usuarios/)
 
-* Capítulo 8: Adicionando o marshmallow
+* Capítulo 8: Listando usuários
 
-* Capítulo 9: Padronizando retornos da API com jsonify
+* Capítulo 9: Buscando usuários
 
-* Capítulo 10: Buscando usuários
+* Capítulo 10: Editando um usuário
 
-* Capítulo 11: Editando um usuário
+* Capítulo 11: Deletando um usuário
 
-* Capítulo 12: Deletando um usuário
+* Capítulo 12: Adicionando o JWT a API
 
-* Capítulo 13: Adicionando o JWT a API
-
-* Capítulo 14: Criando a app de autênticação por JWT
-
-* Capítulo 15: Conclusão
+* Capítulo 13: Criando a app de autênticação por JWT
 
