@@ -24,7 +24,7 @@ Uma api com Flask Framework, MongoDB e autenticação JWT
 
 * Capítulo 6: [Criando e testando nosso modelo de usuários](https://lucassimon.com.br/2018/10/serie-api-em-flask---parte-6---criando-e-testando-nosso-modelo-de-usuarios/)
 
-* Capítulo 7: [Criando e listando usuários](https://lucassimon.com.br/2018/10/serie-api-em-flask---parte-7---criando-usuarios/)
+* Capítulo 7: [Criando usuários](https://lucassimon.com.br/2018/10/serie-api-em-flask---parte-7---criando-usuarios/)
 
 * Capítulo 8: Listando usuários
 
