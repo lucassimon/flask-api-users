@@ -364,7 +364,7 @@ class TestUser:
         """
         fields = [
             'active', 'address', 'cpf_cnpj', 'created', 'email',
-            'full_name', 'id', 'password',
+            'full_name', 'id', 'password', 'roles'
         ]
 
         model_keys = [i for i in self.model._fields.keys()]

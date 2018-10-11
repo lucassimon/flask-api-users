@@ -34,6 +34,13 @@ class Address(EmbeddedDocument):
     country = StringField(default='BRA')
 
 
+class Roles(EmbeddedDocument):
+    """
+    Roles permissions
+    """
+    admin = BooleanField(default=False)
+
+
 class UserMixin(db.Document):
     """
     Default implementation for User fields
@@ -45,7 +52,7 @@ class UserMixin(db.Document):
 
     email = EmailField(required=True, unique=True)
     password = StringField(required=True)
-
+    roles = EmbeddedDocumentField(Roles, default=Roles)
     created = DateTimeField(default=datetime.now)
     active = BooleanField(default=False)
 
