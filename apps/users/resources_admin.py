@@ -9,8 +9,7 @@ from mongoengine.errors import FieldDoesNotExist
 
 # Apps
 from apps.responses import resp_ok, resp_exception
-
-from apps.messages import MSG_RESOURCE_FETCHED_PAGINATED
+from apps.messages import MSG_RESOURCE_FETCHED_PAGINATED, MSG_RESOURCE_FETCHED
 
 # Local
 from .models import User
@@ -56,4 +55,27 @@ class AdminUserPageList(Resource):
         return resp_ok(
             'Users', MSG_RESOURCE_FETCHED_PAGINATED.format('usuários'),  data=result.data,
             **extra
+        )
+
+
+class AdminUserResource(Resource):
+
+    def get(self, user_id):
+        result = None
+        schema = UserSchema()
+
+        try:
+            # buscamos todos os usuarios da base utilizando o paginate
+            user = User.objects.get(id=user_id)
+
+        except FieldDoesNotExist as e:
+            return resp_exception('Users', description=e.__str__())
+
+        except Exception as e:
+            return resp_exception('Users', description=e.__str__())
+
+        result = schema.dump(user)
+
+        return resp_ok(
+            'Users', MSG_RESOURCE_FETCHED.format('Usuários'),  data=result.data
         )
