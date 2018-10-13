@@ -20,6 +20,7 @@ class UserRegistrationSchema(Schema):
 
 
 class UserSchema(Schema):
+    id = Str()
     full_name = Str(
         required=True, error_messages={'required': MSG_FIELD_REQUIRED}
     )
