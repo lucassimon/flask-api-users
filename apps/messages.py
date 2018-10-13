@@ -10,3 +10,4 @@ MSG_PASSWORD_DIDNT_MATCH = 'As senhas não conferem.'
 
 MSG_RESOURCE_CREATED = '{} criado(a).'
 MSG_RESOURCE_FETCHED_PAGINATED = 'Lista os/as {} paginados(as).'
+MSG_RESOURCE_FETCHED = '{} retornado(a).'
