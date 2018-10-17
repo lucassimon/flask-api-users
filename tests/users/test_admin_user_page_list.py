@@ -14,7 +14,7 @@ class TestAdminUserPageList:
     def setup_method(self):
         self.data = {}
         self.CREATE_ENDPOINT = '/users'
-        self.ENDPOINT = '/admin/users/{}'
+        self.ENDPOINT = '/admin/users/page/{}'
 
     def test_page_size_not_in_params_should_be_ten(self, client, mongo):
         resp = client.post(
@@ -100,7 +100,8 @@ class TestAdminUserPageList:
                 "active": False,
                 "cpf_cnpj": "",
                 "email": "teste@teste.com",
-                "full_name": "teste"
+                "full_name": "teste",
+                "id": data[0].get('id')
             }
         ]
 
