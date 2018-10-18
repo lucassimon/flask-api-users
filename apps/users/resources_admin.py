@@ -7,9 +7,11 @@ from flask import request
 from flask_restful import Resource
 from mongoengine.errors import FieldDoesNotExist
 from mongoengine.errors import NotUniqueError, ValidationError
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 # Apps
 from apps.responses import resp_ok, resp_exception, resp_data_invalid, resp_already_exists
+from apps.responses import resp_notallowed_user
 
 from apps.messages import MSG_RESOURCE_FETCHED_PAGINATED, MSG_RESOURCE_FETCHED
 from apps.messages import MSG_NO_DATA, MSG_RESOURCE_UPDATED, MSG_INVALID_DATA
@@ -18,16 +20,24 @@ from apps.messages import MSG_ALREADY_EXISTS, MSG_RESOURCE_DELETED
 # Local
 from .models import User
 from .schemas import UserSchema, UserUpdateSchema
-from .utils import get_user_by_id, exists_email_in_users
+from .utils import get_user_by_id, exists_email_in_users, get_user_by_email
 
 
 class AdminUserPageList(Resource):
-
+    @jwt_required
     def get(self, page_id=1):
         # inicializa o schema podendo conter varios objetos
         schema = UserSchema(many=True)
         # incializa o page_size sempre com 10
         page_size = 10
+
+        current_user = get_user_by_email(get_jwt_identity())
+
+        if not isinstance(current_user, User):
+            return current_user
+
+        if not (current_user.is_active()) and current_user.is_admin():
+            return resp_notallowed_user('Users')
 
         # se enviarmos o page_size como parametro
         if 'page_size' in request.args:
@@ -64,10 +74,17 @@ class AdminUserPageList(Resource):
 
 
 class AdminUserResource(Resource):
-
+    @jwt_required
     def get(self, user_id):
         result = None
         schema = UserSchema()
+        current_user = get_user_by_email(get_jwt_identity())
+
+        if not isinstance(current_user, User):
+            return current_user
+
+        if not (current_user.is_active()) and current_user.is_admin():
+            return resp_notallowed_user('Users')
 
         user = get_user_by_id(user_id)
 
@@ -80,12 +97,20 @@ class AdminUserResource(Resource):
             'Users', MSG_RESOURCE_FETCHED.format('Usuários'),  data=result.data
         )
 
+    @jwt_required
     def put(self, user_id):
         result = None
         schema = UserSchema()
         update_schema = UserUpdateSchema()
         req_data = request.get_json() or None
         email = None
+        current_user = get_user_by_email(get_jwt_identity())
+
+        if not isinstance(current_user, User):
+            return current_user
+
+        if not (current_user.is_active()) and current_user.is_admin():
+            return resp_notallowed_user('Users')
 
         # Valido se o payload está vazio
         if req_data is None:
@@ -138,7 +163,16 @@ class AdminUserResource(Resource):
             'Users', MSG_RESOURCE_UPDATED.format('Usuário'),  data=result.data
         )
 
+    @jwt_required
     def delete(self, user_id):
+        current_user = get_user_by_email(get_jwt_identity())
+
+        if not isinstance(current_user, User):
+            return current_user
+
+        if not (current_user.is_active()) and current_user.is_admin():
+            return resp_notallowed_user('Users')
+
         # Busco o usuário na coleção users pelo seu id
         user = get_user_by_id(user_id)
 
