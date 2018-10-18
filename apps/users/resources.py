@@ -9,6 +9,7 @@ from flask import request
 from flask_restful import Resource
 from bcrypt import gensalt, hashpw
 from mongoengine.errors import NotUniqueError, ValidationError
+from flask_jwt_extended import create_access_token, create_refresh_token
 
 # Apps
 from apps.responses import (
@@ -76,11 +77,16 @@ class SignUp(Resource):
         except Exception as e:
             return resp_exception('Users', description=e.__str__())
 
+        extras = {
+            'token': create_access_token(identity=model.email),
+            'refresh': create_refresh_token(identity=model.email)
+        }
+
         # Realizo um dump dos dados de acordo com o modelo salvo
         schema = UserSchema()
         result = schema.dump(model)
 
         # Retorno 200 o meu endpoint
         return resp_ok(
-            'Users', MSG_RESOURCE_CREATED.format('Usuário'),  data=result.data
+            'Users', MSG_RESOURCE_CREATED.format('Usuário'),  data=result.data, **extras
         )
