@@ -14,6 +14,7 @@ class TestAdminUserPageList:
     def setup_method(self):
         self.data = {}
         self.CREATE_ENDPOINT = '/users'
+        self.AUTH_ENDPOINT = '/auth'
         self.ENDPOINT = '/admin/users/page/{}'
 
     def test_page_size_not_in_params_should_be_ten(self, client, mongo):
@@ -25,7 +26,11 @@ class TestAdminUserPageList:
 
         url = '{}'.format(self.ENDPOINT.format(1))
 
-        resp = client.get(url, content_type='application/json')
+        token = resp.json.get('token')
+
+        headers = {'Authorization': 'Bearer {}'.format(token)}
+
+        resp = client.get(url, content_type='application/json', headers=headers)
 
         assert resp.status_code == 200
         assert resp.json.get('params').get('page_size') == 10
@@ -38,9 +43,13 @@ class TestAdminUserPageList:
             content_type='application/json'
         )
 
+        token = resp.json.get('token')
+
+        headers = {'Authorization': 'Bearer {}'.format(token)}
+
         url = '{}?page_size={}'.format(self.ENDPOINT.format(1), -1)
 
-        resp = client.get(url, content_type='application/json')
+        resp = client.get(url, content_type='application/json', headers=headers)
 
         assert resp.status_code == 200
         assert resp.json.get('params').get('page_size') == 10
@@ -54,7 +63,11 @@ class TestAdminUserPageList:
 
         url = '{}?page_size={}'.format(self.ENDPOINT.format(1), 20)
 
-        resp = client.get(url, content_type='application/json')
+        token = resp.json.get('token')
+
+        headers = {'Authorization': 'Bearer {}'.format(token)}
+
+        resp = client.get(url, content_type='application/json', headers=headers)
 
         assert resp.status_code == 200
         assert resp.json.get('params').get('page_size') == 20
@@ -66,7 +79,18 @@ class TestAdminUserPageList:
         users = db['users']
         data = dict(foo='bar', full_name='teste', email='teste@teste.com', password='123456', confirm_password='123456')
         users.insert_one(data)
-        resp = client.get(self.ENDPOINT.format(1), content_type='application/json')
+
+        resp = client.post(
+            self.CREATE_ENDPOINT,
+            data=dumps(dict(full_name='teste', email='teste2@teste.com', password='123456', confirm_password='123456')),
+            content_type='application/json'
+        )
+
+        token = resp.json.get('token')
+
+        headers = {'Authorization': 'Bearer {}'.format(token)}
+
+        resp = client.get(self.ENDPOINT.format(1), content_type='application/json', headers=headers)
 
         assert resp.status_code == 500
         assert resp.json.get('message') == MSG_EXCEPTION
@@ -79,7 +103,11 @@ class TestAdminUserPageList:
             content_type='application/json'
         )
 
-        resp = client.get(self.ENDPOINT.format(1), content_type='application/json')
+        token = resp.json.get('token')
+
+        headers = {'Authorization': 'Bearer {}'.format(token)}
+
+        resp = client.get(self.ENDPOINT.format(1), content_type='application/json', headers=headers)
 
         assert resp.status_code == 200
         assert resp.json.get('message') == MSG_RESOURCE_FETCHED_PAGINATED.format('usuários')
@@ -92,7 +120,11 @@ class TestAdminUserPageList:
             content_type='application/json'
         )
 
-        resp = client.get(self.ENDPOINT.format(1), content_type='application/json')
+        token = resp.json.get('token')
+
+        headers = {'Authorization': 'Bearer {}'.format(token)}
+
+        resp = client.get(self.ENDPOINT.format(1), content_type='application/json', headers=headers)
         data = resp.json.get('data')
 
         expected = [
