@@ -61,3 +61,18 @@ def exists_email_in_users(email: str, instance=None):
         return False
 
     return True
+
+
+def get_user_by_email(email: str):
+    try:
+        # buscamos todos os usuários da base utilizando o paginate
+        return User.objects.get(email=email)
+
+    except DoesNotExist as e:
+        return resp_does_not_exist('Users', 'Usuário')
+
+    except FieldDoesNotExist as e:
+        return resp_exception('Users', description=e.__str__())
+
+    except Exception as e:
+        return resp_exception('Users', description=e.__str__())
