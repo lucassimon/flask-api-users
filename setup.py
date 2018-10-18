@@ -2,8 +2,8 @@
 
 # Third
 from setuptools import find_packages, setup
+from __version__ import version
 
-__version__ = '0.1.0'
 __description__ = 'Api Python Flask'
 __long_description__ = 'This is an API to Flask Api Users'
 
@@ -17,7 +17,7 @@ testing_extras = [
 
 setup(
     name='api',
-    version=__version__,
+    version=version,
     author=__author__,
     author_email=__author_email__,
     packages=find_packages(),
