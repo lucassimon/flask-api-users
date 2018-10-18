@@ -59,6 +59,9 @@ class UserMixin(db.Document):
     def is_active(self):
         return self.active
 
+    def is_admin(self):
+        return self.roles.admin
+
 
 class User(UserMixin):
     '''
