@@ -7,14 +7,14 @@ from datetime import timedelta
 
 class Config:
     SECRET_KEY = getenv('SECRET_KEY') or 'uma string randômica e gigante'
-    APP_PORT = int(getenv('APP_PORT'))
-    DEBUG = eval(getenv('DEBUG').title())
-    MONGODB_HOST = getenv('MONGODB_URI')
+    PORT = int(getenv('PORT', 5000))
+    DEBUG = getenv('DEBUG') or False
+    MONGODB_HOST = getenv('MONGODB_URI', 'mongodb://localhost:27017/api-users')
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(
-        minutes=int(getenv('JWT_ACCESS_TOKEN_EXPIRES'))
+        minutes=int(getenv('JWT_ACCESS_TOKEN_EXPIRES', 20))
     )
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(
-        days=int(getenv('JWT_REFRESH_TOKEN_EXPIRES'))
+        days=int(getenv('JWT_REFRESH_TOKEN_EXPIRES', 30))
     )
 
 
@@ -29,7 +29,14 @@ class TestingConfig(Config):
     MONGODB_HOST = getenv('MONGODB_URI_TEST')
 
 
+class ProductionConfig(Config):
+    FLASK_ENV = 'production'
+    TESTING = False
+    DEBUG = False
+
+
 config = {
+    'production': ProductionConfig,
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'default': DevelopmentConfig
