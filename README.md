@@ -4,6 +4,91 @@ Uma api com Flask Framework, MongoDB e autenticação JWT
 
 ![coverage](./static/coverage.svg)
 
+## Commands
+
+```shell
+make clean:
+       Removes all pyc, pyo and __pycache__
+
+make clean-build:
+       Clear all build directories
+
+make setup_dev
+       Install dev dependencies and flake8 webhook
+       Needs virtualenv activated and git initalized
+
+make setup
+       Install prod dependencies
+       Needs virtualenv activated and git initalized
+
+make isort:
+       Run isort command cli in development features
+
+make lint:
+       Run lint
+
+make coverage:
+       Run tests with coverage and generate a badge (svg)
+
+make test:
+       Run tests with coverage, lint, and clean commands
+
+make dev:
+       Run the dev web application, with tests and coverage
+
+make run:
+       Run the web application without tests
+
+make release:
+       Creates a new tag and set the version in this package
+       Ex: make release v=1.0.0
+```
+## Inicio
+
+Execute o `make setup_dev` com o virtualenv ativo e o git inicializado, para fazer o setup inicial da aplicação instalando as dependências de desenvolvimento.
+
+Caso queira pode customizar algumas variáveis de ambiente editando o arquivo `.env`.
+
+
+## Crie MongoDB
+
+```shell
+$ docker run --name mongo-latest -p 27017:27017 -d mongo
+```
+
+## Excute a aplicação de dev
+
+```shell
+$ make dev
+```
+
+## Excute a aplicação de dev via docker
+
+Primeiro faço um build da minha imagem
+
+```shell
+$ docker build -t api_users .
+```
+
+Em seguida executar o container a partir da imagem criada
+
+```shell
+$ docker run -itd --name flask_api_users -p 5000:5000  -e SECRET_KEY=hard-secret-key --link mongo-latest:dbserver -e MONGODB_URI=mongodb://dbserver:27017/api-users api_users
+```
+
+## Excute a aplicação de prod via docker
+
+Essa build executa o `gunicorn` ao invés do `python application.py`
+
+```shell
+$ docker build -t api_users_prd -f Dockerfile-prd .
+```
+
+Em seguida executar o container a partir da imagem criada
+
+```shell
+$ docker run -itd --name flask_api_users_prd -p 5001:5000  -e SECRET_KEY=hard-secret-key --link mongo-latest:dbserver -e MONGODB_URI=mongodb://dbserver:27017/api-users api_users_prd
+```
 
 ## Roadmap
 
