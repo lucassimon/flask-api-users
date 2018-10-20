@@ -77,7 +77,8 @@ class TestAdminUserPageList:
         dbclient = MongoClient(uri)
         db = dbclient['api-user-test']
         users = db['users']
-        data = dict(foo='bar', full_name='teste', email='teste@teste.com', password='123456', confirm_password='123456')
+        users.delete_many({})
+        data = dict(foo='bar', full_name='teste', email='teste1@teste.com', password='123456', confirm_password='123456')
         users.insert_one(data)
 
         resp = client.post(
