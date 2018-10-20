@@ -115,3 +115,5 @@ $ docker run -itd --name flask_api_users_prd -p 5001:5000  -e SECRET_KEY=hard-se
 * Capítulo 11: [Deletando um usuário](https://lucassimon.com.br/2018/10/serie-api-em-flask---parte-11---deletando-um-usuario/)
 
 * Capítulo 12: [Autênticação por JWT](https://lucassimon.com.br/2018/10/serie-api-em-flask---parte-12---autenticacao-por-jwt/)
+
+* Capítulo 13: [Criando um container docker](https://lucassimon.com.br/2018/10/serie-api-em-flask---parte-13---criando-um-container-docker/)
