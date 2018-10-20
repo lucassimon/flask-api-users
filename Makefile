@@ -1,3 +1,5 @@
+GIT_CURRENT_BRANCH := ${shell git symbolic-ref --short HEAD}
+
 .PHONY: help clean test clean-build isort run
 
 .DEFAULT: help
@@ -90,7 +92,7 @@ run:
 	python application.py
 
 release:
-	GIT_CURRENT_BRANCH := ${shell git symbolic-ref --short HEAD}
+
 	@if [ "$(v)" == "" ]; then \
 		echo "You need to specify the new release version. Ex: make release v=1.0.0" \
 		exit 1; \
