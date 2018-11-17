@@ -51,13 +51,13 @@ pipeline {
                 export MONGODB_URI_TEST=${params.MONGODB_URI_TEST}
                 export FLASK_ENV=${params.FLASK_ENV}
                 export DEBUG=${params.DEBUG}
-                """"
+                """
             }
             steps {
                 sh """
                 source venv/bin/activate
                 make test
-                """"
+                """
             }
         }
         stage('Create release') {
