@@ -18,6 +18,8 @@ pipeline {
             steps {
                 checkout scm
             }
+        }
+        stage('Envs')
             steps('Print Env After source checkout') {
 
                 echo "Branch Name: ${env.BRANCH_NAME}"
@@ -51,26 +53,19 @@ pipeline {
                 export MONGODB_URI_TEST=${params.MONGODB_URI_TEST}
                 export FLASK_ENV=${params.FLASK_ENV}
                 export DEBUG=${params.DEBUG}
-                """
-            }
-            steps {
-                sh """
                 source venv/bin/activate
                 make test
                 """
             }
         }
-        stage('Create release') {
+        stage('Unit Test') {
 
-            stage('Unit Test') {
-                steps {
-                    echo "Running the unit test..."
-                }
+            steps('Unit Test') {
+                echo "Running the unit test..."
             }
-            stage('Integration test') {
-                steps {
-                    echo "Running the integration test..."
-                }
+        stage('Integration Test')
+            steps {
+                echo "Running the integration test..."
             }
 
         }
