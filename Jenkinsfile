@@ -59,15 +59,14 @@ pipeline {
             }
         }
         stage('Unit Test') {
-
             steps('Unit Test') {
                 echo "Running the unit test..."
             }
+        }
         stage('Integration Test')
             steps {
                 echo "Running the integration test..."
             }
-
         }
         stage('Deploy stage') {
             when {
