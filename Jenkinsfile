@@ -19,7 +19,7 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Envs')
+        stage('Envs') {
             steps('Print Env After source checkout') {
 
                 echo "Branch Name: ${env.BRANCH_NAME}"
@@ -63,7 +63,7 @@ pipeline {
                 echo "Running the unit test..."
             }
         }
-        stage('Integration Test')
+        stage('Integration Test') {
             steps {
                 echo "Running the integration test..."
             }
