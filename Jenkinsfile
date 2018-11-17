@@ -5,7 +5,7 @@ pipeline {
         booleanParam(name: 'DEBUG', defaultValue: true, description: 'Sets DEBUG option')
     }
     environment {
-
+        PATH="/var/lib/jenkins/miniconda3/bin:$PATH"
     }
     options
     {
