@@ -91,12 +91,6 @@ run:
 	python application.py
 
 release:
-
-	@if [ "$(v)" == "" ]; then \
-		echo "You need to specify the new release version. Ex: make release v=1.0.0" \
-		exit 1; \
-	fi
-
 	@echo "creating a new release ${v}"
 	@echo "version = '${v}'" > `pwd`/__version__.py
 	@git add `pwd`/__version__.py
