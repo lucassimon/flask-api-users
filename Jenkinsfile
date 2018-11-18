@@ -18,8 +18,6 @@ pipeline {
                 checkout([
                     $class: 'GitSCM',
                     branches: [[name: '*/master']],
-                    extensions: scm.extensions,
-                    userRemoteConfigs: scm.userRemoteConfigs
                 ])
             }
         }
