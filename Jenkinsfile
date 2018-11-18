@@ -72,7 +72,7 @@ pipeline {
                             ]
                         ]
                     )
-                    echo "make release ${releaseInput}"
+                    sh """make release ${releaseInput}"""
                 }
             }
         }

@@ -71,9 +71,8 @@ setup_dev: clone-dotenv
 	@flake8 --install-hook git
 	@git config --bool flake8.strict true
 
-coverage:
-	@echo "---- Running tests coverage ----"
-	@pytest --cov=apps --color=yes tests/
+coverage: test
+	@echo "---- Create coverage ----"
 	@coverage-badge > static/coverage.svg
 
 isort:
@@ -82,7 +81,7 @@ isort:
 lint: clean
 	flake8
 
-test: lint
+test:
 	@pytest --verbose --cov=apps --color=yes tests/
 
 dev: test
@@ -95,16 +94,6 @@ release:
 
 	@if [ "$(v)" == "" ]; then \
 		echo "You need to specify the new release version. Ex: make release v=1.0.0" \
-		exit 1; \
-	fi
-
-	@if ! make coverage; then \
-		echo "Error" \
-		exit 1; \
-	fi
-
-	@if ! make lint; then \
-		echo "Error" \
 		exit 1; \
 	fi
 
