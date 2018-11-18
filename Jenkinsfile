@@ -39,8 +39,9 @@ pipeline {
         stage ("Install Dependencies") {
             steps {
                 sh """
-                conda create --yes -n ${JOB_NAME} python=3
-                source activate ${JOB_NAME}
+
+                python3 -m venv .venv
+                source activate .venv
                 pip install --upgrade pip
                 pip install -r requirements/dev.txtt
                 """
@@ -53,7 +54,7 @@ pipeline {
                 export MONGODB_URI_TEST=${params.MONGODB_URI_TEST}
                 export FLASK_ENV=${params.FLASK_ENV}
                 export DEBUG=${params.DEBUG}
-                source activate ${JOB_NAME}
+                source activate .venv
                 make test
                 """
             }
