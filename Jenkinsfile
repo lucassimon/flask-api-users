@@ -9,7 +9,8 @@ pipeline {
     }
     options
     {
-        buildDiscarder(logRotator(numToKeepStr: '100', daysToKeepStr: '45'))
+        skipDefaultCheckout(true)
+        buildDiscarder(logRotator(numToKeepStr: '3', daysToKeepStr: '7'))
         timestamps()
     }
     agent any
@@ -38,13 +39,12 @@ pipeline {
         stage ("Install Dependencies") {
             steps {
                 sh """
-                pip install virtualenv
-                virtualenv --p python3 venv
-                source venv/bin/activate
+                conda create --yes -n ${JOB_NAME} python3
+                source activate ${JOB_NAME}
                 pip install --upgrade pip
-                pip install -r requirements/dev.txt
-                deactivate
+                pip install -r requirements/dev.txtt
                 """
+
             }
         }
         stage('Run Tests') {
@@ -53,7 +53,7 @@ pipeline {
                 export MONGODB_URI_TEST=${params.MONGODB_URI_TEST}
                 export FLASK_ENV=${params.FLASK_ENV}
                 export DEBUG=${params.DEBUG}
-                source venv/bin/activate
+                source activate ${JOB_NAME}
                 make test
                 """
             }
@@ -78,8 +78,14 @@ pipeline {
         }
     }
     post {
+        always {
+            sh 'conda remove --yes -n ${BUILD_TAG} --all'
+        }
         success {
             echo "Success"
+        }
+        failure {
+            echo "Send e-mail, when failed"
         }
     }
 }
