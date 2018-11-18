@@ -40,7 +40,7 @@ pipeline {
                 python3 -m venv .venv
                 source .venv/bin/activate
                 pip install --upgrade pip
-                pip install -r ${env.WORKSPACE}/requirements/dev.txt
+                pip install -r ${env.WORKSPACE}/requirements/test.txt
                 """
             }
         }
@@ -50,13 +50,30 @@ pipeline {
                 source .venv/bin/activate
                 echo "Running the unit test..."
                 make clean
-                make test
+                make coverage
                 """
             }
         }
-        stage('Integration Test') {
+        stage('Generate Release') {
             steps {
-                echo "Running the integration test..."
+                script {
+                    def version = readFile encoding: 'utf-8', file: '__version__.py'
+                    def message = "Latest ${version}. New version:"
+
+                    def releaseInput = input(
+                        id: 'userInput',
+                        message: "${message}",
+                        parameters: [
+                            [
+                                $class: 'TextParameterDefinition',
+                                defaultValue: 'uat',
+                                description: 'Release candidate',
+                                name: 'rc'
+                            ]
+                        ]
+                    )
+                    echo "make release ${releaseInput}"
+                }
             }
         }
         stage('Deploy stage') {
@@ -70,7 +87,9 @@ pipeline {
     }
     post {
         always {
-            echo "Remove env"
+            sh """
+            rm -rf .venv
+            """
         }
         success {
             echo "Success"
