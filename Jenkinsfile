@@ -1,9 +1,10 @@
 pipeline {
-    parameters {
-        string(name: 'MONGODB_URI_TEST', defaultValue: 'mongodb://localhost:27017/api-user-test', description: 'Put the URI Mongo database.')
-        string(name: 'FLASK_ENV', defaultValue: 'testing', description: 'Enter some information about the person')
-        booleanParam(name: 'DEBUG', defaultValue: true, description: 'Sets DEBUG option')
-    }
+    environment {
+        MONGODB_URI_TEST = credentials('MONGO_DB_TEST')
+        FLASK_ENV = 'testing'
+        FLASK_APP = 'application.py'
+        DEBUG = true
+	}
     options
     {
         skipDefaultCheckout(true)
@@ -36,23 +37,19 @@ pipeline {
         stage ("Install Dependencies") {
             steps {
                 sh """
-
                 python3 -m venv .venv
-                source activate .venv
+                source .venv/bin/activate
                 pip install --upgrade pip
-                pip install -r requirements/dev.txtt
+                pip install -r ${env.WORKSPACE}/requirements/dev.txt
                 """
-
             }
         }
         stage('Run Tests') {
             steps {
                 sh """
-                export MONGODB_URI_TEST=${params.MONGODB_URI_TEST}
-                export FLASK_ENV=${params.FLASK_ENV}
-                export DEBUG=${params.DEBUG}
-                source activate .venv
+                source .venv/bin/activate
                 echo "Running the unit test..."
+                make clean
                 make test
                 """
             }
