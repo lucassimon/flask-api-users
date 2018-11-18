@@ -39,7 +39,7 @@ pipeline {
         stage ("Install Dependencies") {
             steps {
                 sh """
-                conda create --yes -n ${JOB_NAME} python3
+                conda create --yes -n ${JOB_NAME} python=3
                 source activate ${JOB_NAME}
                 pip install --upgrade pip
                 pip install -r requirements/dev.txtt
