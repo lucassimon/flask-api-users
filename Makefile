@@ -49,7 +49,7 @@ help:
 clean:
 	find . -name '*.pyc' -exec rm --force {} +
 	find . -name '*.pyo' -exec rm --force {} +
-	find . | grep -E "__pycache__|.pyc|.DS_Store$$" | xargs rm -rf
+	find . | grep -E "__pycache__|.pytest_cache|.pyc|.DS_Store$$" | xargs rm -rf
 
 clean-build:
 	rm --force --recursive build/
