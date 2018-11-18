@@ -76,6 +76,7 @@ pipeline {
             }
         }
         stage('Deploy stage') {
+
             steps {
                 echo 'Deploy master to stage'
             }
