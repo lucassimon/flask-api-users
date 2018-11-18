@@ -17,7 +17,9 @@ pipeline {
             steps {
                 checkout([
                     $class: 'GitSCM',
-                    branches: [[name: 'master']],
+                    branches: [[name: '*/master']],
+                    extensions: scm.extensions,
+                    userRemoteConfigs: scm.userRemoteConfigs
                 ])
             }
         }
@@ -75,7 +77,7 @@ pipeline {
                             ]
                         ]
                     )
-                    sh """make release ${releaseInput}"""
+                    sh """make release v=${releaseInput}"""
                 }
             }
         }
