@@ -4,9 +4,6 @@ pipeline {
         string(name: 'FLASK_ENV', defaultValue: 'testing', description: 'Enter some information about the person')
         booleanParam(name: 'DEBUG', defaultValue: true, description: 'Sets DEBUG option')
     }
-    environment {
-        PATH="/var/lib/jenkins/miniconda3/bin:$PATH"
-    }
     options
     {
         skipDefaultCheckout(true)
@@ -55,13 +52,9 @@ pipeline {
                 export FLASK_ENV=${params.FLASK_ENV}
                 export DEBUG=${params.DEBUG}
                 source activate .venv
+                echo "Running the unit test..."
                 make test
                 """
-            }
-        }
-        stage('Unit Test') {
-            steps('Unit Test') {
-                echo "Running the unit test..."
             }
         }
         stage('Integration Test') {
@@ -80,7 +73,7 @@ pipeline {
     }
     post {
         always {
-            sh 'conda remove --yes -n ${BUILD_TAG} --all'
+            echo "Remove env"
         }
         success {
             echo "Success"
