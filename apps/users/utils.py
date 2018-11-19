@@ -30,7 +30,7 @@ def get_user_by_id(user_id: str):
         # buscamos todos os usuários da base utilizando o paginate
         return User.objects.get(id=user_id)
 
-    except DoesNotExist as e:
+    except DoesNotExist:
         return resp_does_not_exist('Users', 'Usuário')
 
     except FieldDoesNotExist as e:
@@ -68,7 +68,7 @@ def get_user_by_email(email: str):
         # buscamos todos os usuários da base utilizando o paginate
         return User.objects.get(email=email)
 
-    except DoesNotExist as e:
+    except DoesNotExist:
         return resp_does_not_exist('Users', 'Usuário')
 
     except FieldDoesNotExist as e:
