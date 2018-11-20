@@ -43,6 +43,13 @@ def pull(conn):
     git(conn, "pull")
 
 
+def fetch(conn):
+    """
+    Run git pull command on repository
+    """
+    git(conn, "fetch")
+
+
 def sudo(conn, cmd):
     conn.sudo(cmd)
 
@@ -93,7 +100,8 @@ def deploy(c, tag=None):
     """
     Deploy the code to context
     """
-    pull(c)
+
+    fetch(c)
 
     if tag:
         checkout(c, tag)
@@ -101,5 +109,6 @@ def deploy(c, tag=None):
         checkout(c)
 
     install_requirements(c)
+
     restart(c)
 
