@@ -84,7 +84,7 @@ lint: clean
 test:
 	@pytest --verbose --cov=apps --color=yes tests/
 
-dev: test
+dev: lint test
 	python application.py
 
 run:
