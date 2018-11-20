@@ -4,6 +4,7 @@ pipeline {
         FLASK_ENV = 'testing'
         FLASK_APP = 'application.py'
         DEBUG = true
+        HOSTS = credentials('FLASK_API_DEPLOY_HOSTS')
 	}
     options
     {
@@ -78,7 +79,11 @@ pipeline {
         stage('Deploy stage') {
 
             steps {
-                echo 'Deploy master to stage'
+                echo "Deploy to #${env.HOSTS}"
+                sh """
+                source .venv/bin/activate
+                fab -H ${env.HOSTS} uname
+                """
             }
         }
     }
