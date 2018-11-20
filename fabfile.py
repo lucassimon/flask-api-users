@@ -89,12 +89,17 @@ def stop(c):
 
 
 @task
-def deploy(c):
+def deploy(c, tag=None):
     """
     Deploy the code to context
     """
     pull(c)
-    checkout(c)
+
+    if tag:
+        checkout(c, tag)
+    else:
+        checkout(c)
+
     install_requirements(c)
     restart(c)
 
