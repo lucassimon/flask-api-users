@@ -1,10 +1,10 @@
 pipeline {
     environment {
-        MONGODB_URI_TEST = credentials('MONGO_DB_TEST')
+        MONGODB_URI_TEST = credentials('API_USERS_MONGO_DB_TEST')
         FLASK_ENV = 'testing'
         FLASK_APP = 'application.py'
         DEBUG = true
-        HOSTS = credentials('FLASK_API_DEPLOY_HOSTS')
+        HOSTS = credentials('API_USERS_DEPLOY_HOSTS')
 	}
     options
     {
