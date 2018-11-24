@@ -117,3 +117,9 @@ $ docker run -itd --name flask_api_users_prd -p 5001:5000  -e SECRET_KEY=hard-se
 * Capítulo 12: [Autênticação por JWT](https://lucassimon.com.br/2018/10/serie-api-em-flask---parte-12---autenticacao-por-jwt/)
 
 * Capítulo 13: [Criando um container docker](https://lucassimon.com.br/2018/10/serie-api-em-flask---parte-13---criando-um-container-docker/)
+
+* Capítulo 14: [Deploy Flask na Digital Ocean](https://lucassimon.com.br/2018/10/serie-api-em-flask---parte-14---arquivos-de-configuracao-para-deploy-na-digital-ocean/)
+
+* Capítulo 15: [Automatizando o processo de deploy com Fabric](https://lucassimon.com.br/2018/11/serie-api-em-flask---parte-15---automatizando-o-processo-de-deploy-com-fabric/)
+
+* Capítulo 16: [CI e CD com Jenkins, Python, Flask e Fabric](https://lucassimon.com.br/2018/11/serie-api-em-flask---parte-16---ci-e-cd-com-jenkins-python-flask-e-fabric/)
