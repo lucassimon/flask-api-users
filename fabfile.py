@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from fabric import Connection
 from invoke import task
 
 
@@ -111,4 +110,3 @@ def deploy(c, tag=None):
     install_requirements(c)
 
     restart(c)
-
