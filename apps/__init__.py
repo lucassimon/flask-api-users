@@ -9,7 +9,7 @@ from config import config
 from .api import configure_api
 from .db import db
 from .jwt import configure_jwt
-from .rabbit import connection_rabbit
+from .rabbit import rabbit
 
 
 def create_app(config_name):
@@ -17,23 +17,14 @@ def create_app(config_name):
 
     app.config.from_object(config[config_name])
 
-    @app.before_first_request
-    def run_on_start():
-        if not 'rabbit' in g:
-            g.rabbit = connection_rabbit(app.config.get('AMQP_URI'))
+    # Configure Rabbit Conn KeepAlive
+    rabbit.init_app(app)
 
     @app.after_request
     def change_headers(response):
         response.headers['X-APP'] = 'Created with love.'
         response.headers['Server'] = 'API Users'
         return response
-
-    @app.teardown_appcontext
-    def close_rabbitmq(response):
-        conn = g.pop('rabbit', None)
-
-        if conn is not None:
-            conn.close()
 
     # Configure MongoEngine
     db.init_app(app)
