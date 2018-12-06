@@ -4,7 +4,7 @@
 # Importamos as classes API e Resource
 from flask_restful import Api, Resource
 
-from apps.users.resources import SignUp
+from apps.users.resources import SignUp, ConfirmEmail
 from apps.users.resources_admin import AdminUserPageList, AdminUserResource
 from apps.auth.resources import AuthResource, RefreshTokenResource
 
@@ -30,6 +30,9 @@ def configure_api(app):
 
     # rotas para o endpoint de usuarios
     api.add_resource(SignUp, '/users')
+    api.add_resource(
+        ConfirmEmail, '/users/activate/<string:token>'
+    )
 
     # rotas para os admins
     api.add_resource(AdminUserPageList, '/admin/users/page/<int:page_id>')
