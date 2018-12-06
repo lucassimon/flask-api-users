@@ -16,6 +16,10 @@ class Config:
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(
         days=int(getenv('JWT_REFRESH_TOKEN_EXPIRES', 30))
     )
+    AMQP_URI = getenv('AMQP_URI') or ''
+    RABBIT_QUEUE_SIGNUP = 'api-users-signup'
+
+
 
 
 class DevelopmentConfig(Config):
