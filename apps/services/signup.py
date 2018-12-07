@@ -2,11 +2,7 @@
 from json import dumps
 
 
-from flask import g
-
-from jwt import encode as jwt_encode
-
-from apps.users.models import User
+from apps.rabbit import RabbitMQ
 
 
 class ProducerSignUp:
@@ -16,11 +12,10 @@ class ProducerSignUp:
         if not isinstance(queue, str):
             raise ValueError('Verifique a uri do sistema de filas')
 
-        conn = g.rabbit
+        conn = RabbitMQ.connect()
         self.queue = queue
         self.channel = conn.channel()
         self.channel.queue_declare(queue=queue, durable=True)
-
 
     def publish(self, user: {}, token):
         '''
@@ -31,7 +26,7 @@ class ProducerSignUp:
         from apps.users.resources import ConfirmEmail
         url = api.url_for(ConfirmEmail, token=token, _external=True)
 
-        context = { "data": user, "url": url }
+        context = {"data": user, "url": url}
 
         message = self.message(name='Api-Users', to=user.get('email'), **context)
 
@@ -44,9 +39,11 @@ class ProducerSignUp:
         self.channel.basic_publish(exchange='', routing_key=self.queue, body=body)
 
     def message(
-        self, name: str, to: str,
+        self,
+        name: str,
+        to: str,
         subject: str = 'Confirme o email.',
-        ffrom: str = 'no-reply@api-users',
+        ffrom: str = 'no-reply@flask-api-users.com',
         **kwargs
     ):
 
@@ -58,7 +55,7 @@ class ProducerSignUp:
             '''
         }
 
-        if 'context' in kwargs:
-            message['context'] = kwargs['context']
+        if kwargs:
+            message['context'] = kwargs
 
         return message
