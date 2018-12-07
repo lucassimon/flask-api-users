@@ -18,7 +18,8 @@ class Config:
     )
     AMQP_URI = getenv('AMQP_URI') or ''
     RABBIT_QUEUE_SIGNUP = 'api-users-signup'
-
+    SENTRY_DSN = getenv('SENTRY_DSN') or ''
+    ENABLE_SIGNUP = getenv('DEBUG') or False
 
 
 
@@ -31,6 +32,7 @@ class TestingConfig(Config):
     FLASK_ENV = 'testing'
     TESTING = True
     MONGODB_HOST = getenv('MONGODB_URI_TEST')
+    ENABLE_SIGNUP = False
 
 
 class ProductionConfig(Config):
