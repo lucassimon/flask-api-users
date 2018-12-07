@@ -34,6 +34,10 @@ class Address(EmbeddedDocument):
     country = StringField(default='BRA')
 
 
+class Registration(EmbeddedDocument):
+    sent_activate_email = BooleanField(default=False)
+
+
 class Roles(EmbeddedDocument):
     """
     Roles permissions
@@ -55,6 +59,7 @@ class UserMixin(db.Document):
     roles = EmbeddedDocumentField(Roles, default=Roles)
     created = DateTimeField(default=datetime.now)
     active = BooleanField(default=False)
+    registration = EmbeddedDocumentField(Registration, default=Registration)
 
     def is_active(self):
         return self.active
