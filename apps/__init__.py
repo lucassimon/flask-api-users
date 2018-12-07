@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, g
+from flask import Flask
 from config import config
 
 # Third
@@ -9,16 +9,14 @@ from config import config
 from .api import configure_api
 from .db import db
 from .jwt import configure_jwt
-from .rabbit import rabbit
+
+from .sentry import configure_sentry
 
 
 def create_app(config_name):
     app = Flask('api-users')
 
     app.config.from_object(config[config_name])
-
-    # Configure Rabbit Conn KeepAlive
-    rabbit.init_app(app)
 
     @app.after_request
     def change_headers(response):
@@ -34,5 +32,8 @@ def create_app(config_name):
 
     # executa a chamada da função de configuração
     configure_api(app)
+
+    # configura o sentry
+    configure_sentry(app.config.get('SENTRY_DSN'))
 
     return app
