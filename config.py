@@ -22,7 +22,6 @@ class Config:
     ENABLE_SIGNUP = getenv('DEBUG') or False
 
 
-
 class DevelopmentConfig(Config):
     FLASK_ENV = 'development'
     DEBUG = True
