@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from apps.responses import resp_data_invalid, resp_exception
-from apps.responses import resp_does_not_exist, resp_already_exists, resp_ok
+from apps.extensions.responses import resp_data_invalid, resp_exception
+from apps.extensions.responses import resp_does_not_exist, resp_already_exists, resp_ok
 
-from apps.messages import MSG_INVALID_DATA, MSG_EXCEPTION, MSG_DOES_NOT_EXIST
-from apps.messages import MSG_ALREADY_EXISTS
+from apps.extensions.messages import MSG_INVALID_DATA, MSG_EXCEPTION, MSG_DOES_NOT_EXIST
+from apps.extensions.messages import MSG_ALREADY_EXISTS
 
 
 def test_resp_data_invalid_raises_error():

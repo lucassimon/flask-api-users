@@ -10,16 +10,17 @@ from flask_restful import Resource
 from bcrypt import gensalt, hashpw
 from mongoengine.errors import NotUniqueError, ValidationError
 from flask_jwt_extended import create_access_token, create_refresh_token
+from marshmallow import ValidationError
 
 # Apps
-from apps.responses import (
+from apps.extensions.responses import (
     resp_already_exists,
     resp_exception,
     resp_data_invalid,
     resp_ok
 )
-from apps.messages import MSG_NO_DATA, MSG_PASSWORD_DIDNT_MATCH, MSG_INVALID_DATA
-from apps.messages import MSG_RESOURCE_CREATED
+from apps.extensions.messages import MSG_NO_DATA, MSG_PASSWORD_DIDNT_MATCH, MSG_INVALID_DATA
+from apps.extensions.messages import MSG_RESOURCE_CREATED
 
 # Local
 from .models import User
@@ -49,11 +50,15 @@ class SignUp(Resource):
             return resp_data_invalid('Users', errors)
 
         # Desserialização os dados postados ou melhor meu payload
-        data, errors = schema.load(req_data)
+        try:
+            data = schema.load(req_data)
+        except ValidationError as err:
+            print(err.messages)  # => {"email": ['"foo" is not a valid email address.']}
+            print(err.valid_data)  # => {"name": "John"}
 
-        # Se houver erros retorno uma resposta inválida
-        if errors:
-            return resp_data_invalid('Users', errors)
+            # Se houver erros retorno uma resposta inválida
+            if err:
+                return resp_data_invalid('Users', err)
 
         # Crio um hash da minha senha
         hashed = hashpw(password.encode('utf-8'), gensalt(12))
@@ -88,5 +93,5 @@ class SignUp(Resource):
 
         # Retorno 200 o meu endpoint
         return resp_ok(
-            'Users', MSG_RESOURCE_CREATED.format('Usuário'),  data=result.data, **extras
+            'Users', MSG_RESOURCE_CREATED.format('Usuário'),  data=result, **extras
         )

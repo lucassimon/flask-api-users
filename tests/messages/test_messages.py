@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from apps.messages import MSG_FIELD_REQUIRED, MSG_INVALID_DATA
-from apps.messages import MSG_DOES_NOT_EXIST, MSG_EXCEPTION
-from apps.messages import MSG_ALREADY_EXISTS, MSG_NO_DATA
-from apps.messages import MSG_PASSWORD_DIDNT_MATCH, MSG_RESOURCE_CREATED
+from apps.extensions.messages import MSG_FIELD_REQUIRED, MSG_INVALID_DATA
+from apps.extensions.messages import MSG_DOES_NOT_EXIST, MSG_EXCEPTION
+from apps.extensions.messages import MSG_ALREADY_EXISTS, MSG_NO_DATA
+from apps.extensions.messages import MSG_PASSWORD_DIDNT_MATCH, MSG_RESOURCE_CREATED
 
 
 def test_msg_field_required():

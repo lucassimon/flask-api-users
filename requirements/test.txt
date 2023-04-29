@@ -1,12 +1,10 @@
 -r base.txt
 
-pycodestyle==2.4.0
-flake8==3.6.0
-pytest==3.6.1
-pytest-cov==2.5.1
-pytest-flask==0.10.0
-pytest-runner==4.2
-Faker==0.8.15
-coverage==4.5.1
-coverage-badge==0.2.0
-Fabric==2.4.0
+pytest
+pytest-cov
+pytest-flask
+pytest-runner
+Faker
+coverage
+coverage-badge
+Fabric

@@ -5,7 +5,7 @@
 from mongoengine.errors import FieldDoesNotExist, DoesNotExist, MultipleObjectsReturned
 
 # Apps
-from apps.responses import resp_exception, resp_does_not_exist
+from apps.extensions.responses import resp_exception, resp_does_not_exist
 
 # Local
 from .models import User

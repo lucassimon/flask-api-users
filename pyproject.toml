@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "flask-api-users"
+version = "0.1.0"
+description = ""
+authors = ["Lucas <lucassrod@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+flask = "2.0.0"
+flask-restful = "^0.3.9"
+python-dotenv = "^1.0.0"
+pytz = "^2023.3"
+flask-mongoengine = "^1.0.0"
+marshmallow = "^3.19.0"
+bcrypt = "^4.0.1"
+flask-jwt-extended = "^4.4.4"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.3.1"
+
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.4.2"
+
+
+[tool.poetry.group.dev.dependencies]
+ipdb = "^0.13.13"
+isort = "^5.12.0"
+flask-shell-ipython = "^0.5.1"
+
+
+[tool.poetry.group.prod.dependencies]
+gunicorn = "^20.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[virtualenv]
+create = false

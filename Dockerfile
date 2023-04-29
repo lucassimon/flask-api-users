@@ -1,6 +1,14 @@
-FROM python:3.6-alpine
+FROM python:3.11-alpine as base
+ENV HOME=/home/app \
+    FLASK_APP=application.py \
+    POETRY_VIRTUALENVS_PATH=/home/app/venv \
+    POETRY_HOME=/home/app/poetry \
+    PATH="/home/app/venv/bin:$PATH" \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
 RUN rm -rf /var/cache/apk/* && \
-    apk update && \
+    apk --no-cache update && \
     apk add make && \
     apk add build-base && \
     apk add gcc && \
@@ -8,18 +16,39 @@ RUN rm -rf /var/cache/apk/* && \
     apk add libffi-dev && \
     apk add musl-dev && \
     apk add openssl-dev && \
+    apk add curl && \
     apk del build-base && \
-    rm -rf /var/cache/apk/*
+    rm -rf /var/cache/apk/* && \
+    python -m venv /home/app/venv && \
+    /home/app/venv/bin/pip install --upgrade pip && \
+    pip install poetry && \
+    poetry config virtualenvs.path /home/app/venv && \
+    poetry config virtualenvs.create false
 
-ENV HOME=/home/api FLASK_APP=application.py FLASK_ENV=development PORT=5000
-RUN adduser -D api
-USER api
+# DEVLOPMENT
+FROM base as dev
 WORKDIR $HOME
-COPY --chown=api:api . $HOME
 
-RUN python -m venv venv && \
-    venv/bin/pip install --upgrade pip && \
-    venv/bin/pip install -r requirements/dev.txt
+# CI
+FROM dev as ci
+WORKDIR $HOME
+COPY . .
+RUN source /home/app/venv/bin/activate && \
+    poetry install --with dev,test,docs
 
-EXPOSE 5000
-ENTRYPOINT [ "./boot.sh" ]
+# PROD
+FROM ci as build
+RUN rm -rf /home/app/venv && \
+    python -m venv /home/app/venv && \
+    pip install poetry && \
+    poetry install --only main,prod --without dev,test,docs
+
+# SHIPMENT
+
+FROM base
+WORKDIR $HOME
+COPY --chown=nobody --from=build /home/app/venv /home/app/venv
+COPY --chown=nobody --from=build ${HOME} ${HOME}
+USER nobody
+# ENTRYPOINT ["tail", "-f", "/dev/null"]
+ENTRYPOINT [ "gunicorn", "--config", "gunicorn_settings.py", "-b", ":8080", "run:app" ]

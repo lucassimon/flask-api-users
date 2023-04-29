@@ -10,12 +10,12 @@ from mongoengine.errors import NotUniqueError, ValidationError
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
 # Apps
-from apps.responses import resp_ok, resp_exception, resp_data_invalid, resp_already_exists
-from apps.responses import resp_notallowed_user
+from apps.extensions.responses import resp_ok, resp_exception, resp_data_invalid, resp_already_exists
+from apps.extensions.responses import resp_notallowed_user
 
-from apps.messages import MSG_RESOURCE_FETCHED_PAGINATED, MSG_RESOURCE_FETCHED
-from apps.messages import MSG_NO_DATA, MSG_RESOURCE_UPDATED, MSG_INVALID_DATA
-from apps.messages import MSG_ALREADY_EXISTS, MSG_RESOURCE_DELETED
+from apps.extensions.messages import MSG_RESOURCE_FETCHED_PAGINATED, MSG_RESOURCE_FETCHED
+from apps.extensions.messages import MSG_NO_DATA, MSG_RESOURCE_UPDATED, MSG_INVALID_DATA
+from apps.extensions.messages import MSG_ALREADY_EXISTS, MSG_RESOURCE_DELETED
 
 # Local
 from .models import User

@@ -88,7 +88,6 @@ def resp_ok(resource: str, message: str, data=None, **extras):
     '''
     Responses 200
     '''
-
     response = {'status': 200, 'message': message, 'resource': resource}
 
     if data:

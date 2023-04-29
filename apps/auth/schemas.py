@@ -4,7 +4,7 @@
 from marshmallow import Schema
 from marshmallow.fields import Email, Str
 
-from apps.messages import MSG_FIELD_REQUIRED
+from apps.extensions.messages import MSG_FIELD_REQUIRED
 
 
 class LoginSchema(Schema):

@@ -1,0 +1,37 @@
+version: "3.5"
+services:
+  test: &defaults
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app/
+      - dependencies:/opt/venv
+    command: pytest -s -vvv
+    env_file:
+      - ./.docker/dev.env
+      - ./.docker/test.env
+
+  app:
+    <<: *defaults
+    command: flask run --host=0.0.0.0 --port=5000
+    # command: tail -f /dev/null
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./.docker/dev.env
+
+  ci:
+    <<: *defaults
+    build:
+      context: .
+      target: ci
+    command:
+      - /bin/sh
+      - c
+      - |
+        pytest
+    volumes: []
+
+volumes:
+  dependencies: {}

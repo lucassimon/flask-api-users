@@ -6,7 +6,7 @@ from datetime import timedelta
 
 
 class Config:
-    SECRET_KEY = getenv('SECRET_KEY') or 'uma string randômica e gigante'
+    SECRET_KEY = getenv('SECRET_KEY')
     PORT = int(getenv('PORT', 5000))
     DEBUG = getenv('DEBUG') or False
     MONGODB_HOST = getenv('MONGODB_URI', 'mongodb://localhost:27017/api-users')

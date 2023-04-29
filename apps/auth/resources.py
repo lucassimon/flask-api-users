@@ -8,15 +8,16 @@ from flask import request
 # Third
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token, create_refresh_token
-from flask_jwt_extended import jwt_refresh_token_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, set_access_cookies
 from bcrypt import checkpw
+from marshmallow import ValidationError
 
 # Apps
 from apps.users.models import User
 from apps.users.schemas import UserSchema
 from apps.users.utils import get_user_by_email
-from apps.messages import MSG_NO_DATA, MSG_TOKEN_CREATED
-from apps.responses import resp_ok, resp_data_invalid, resp_notallowed_user
+from apps.extensions.messages import MSG_NO_DATA, MSG_TOKEN_CREATED
+from apps.extensions.responses import resp_ok, resp_data_invalid, resp_notallowed_user
 
 # Local
 from .schemas import LoginSchema
@@ -35,10 +36,16 @@ class AuthResource(Resource):
         if req_data is None:
             return resp_data_invalid('Users', [], msg=MSG_NO_DATA)
 
-        data, errors = login_schema.load(req_data)
+        # Desserialização os dados postados ou melhor meu payload
+        try:
+            data = login_schema.load(req_data)
+        except ValidationError as err:
+            print(err.messages)  # => {"email": ['"foo" is not a valid email address.']}
+            print(err.valid_data)  # => {"name": "John"}
 
-        if errors:
-            return resp_data_invalid('Users', errors)
+            # Se houver erros retorno uma resposta inválida
+            if err:
+                return resp_data_invalid('Users', err)
 
         # Buscamos nosso usuário pelo email
         user = get_user_by_email(data.get('email'))
@@ -59,23 +66,26 @@ class AuthResource(Resource):
 
             # Chamamos os metodos para criar os tokens passando como identidade
             # o email do nosso usuario
+            access_token = create_access_token(identity=user.email)
             extras = {
-                'token': create_access_token(identity=user.email),
+                'token': access_token,
                 'refresh': create_refresh_token(identity=user.email)
             }
 
             result = schema.dump(user)
 
-            return resp_ok(
-                'Auth', MSG_TOKEN_CREATED, data=result.data, **extras
+            response = resp_ok(
+                'Auth', MSG_TOKEN_CREATED, data=result, **extras
             )
+
+            # set_access_cookies(response, access_token)
+            return response
 
         return resp_notallowed_user('Auth')
 
 
 class RefreshTokenResource(Resource):
-
-    @jwt_refresh_token_required
+    @jwt_required(refresh=True)
     def post(self, *args, **kwargs):
         '''
         Refresh a token that expired.

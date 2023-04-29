@@ -5,8 +5,8 @@ from json import dumps, loads
 
 from pymongo import MongoClient
 
-from apps.messages import MSG_RESOURCE_FETCHED_PAGINATED, MSG_EXCEPTION
-from apps.responses import resp_data_invalid
+from apps.extensions.messages import MSG_RESOURCE_FETCHED_PAGINATED, MSG_EXCEPTION
+from apps.extensions.responses import resp_data_invalid
 
 
 class TestAdminUserPageList:

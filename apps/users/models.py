@@ -11,9 +11,9 @@ from mongoengine import (
     EmbeddedDocumentField,
     StringField,
 )
-
+import mongoengine as me
 # Apps
-from apps.db import db
+from apps.extensions.db import db
 
 
 class Address(EmbeddedDocument):
@@ -41,7 +41,7 @@ class Roles(EmbeddedDocument):
     admin = BooleanField(default=False)
 
 
-class UserMixin(db.Document):
+class UserMixin(me.Document):
     """
     Default implementation for User fields
     """

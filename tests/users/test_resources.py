@@ -3,9 +3,9 @@ import pytest
 
 from json import dumps, loads
 
-from apps.messages import MSG_NO_DATA, MSG_INVALID_DATA, MSG_PASSWORD_DIDNT_MATCH
-from apps.messages import MSG_FIELD_REQUIRED, MSG_RESOURCE_CREATED, MSG_ALREADY_EXISTS
-from apps.responses import resp_data_invalid
+from apps.extensions.messages import MSG_NO_DATA, MSG_INVALID_DATA, MSG_PASSWORD_DIDNT_MATCH
+from apps.extensions.messages import MSG_FIELD_REQUIRED, MSG_RESOURCE_CREATED, MSG_ALREADY_EXISTS
+from apps.extensions.responses import resp_data_invalid
 
 
 class TestSignUp:

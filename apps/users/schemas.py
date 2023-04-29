@@ -4,7 +4,7 @@
 from marshmallow import Schema
 from marshmallow.fields import Email, Str, Boolean, Nested
 
-from apps.messages import MSG_FIELD_REQUIRED
+from apps.extensions.messages import MSG_FIELD_REQUIRED
 
 
 class UserRegistrationSchema(Schema):
@@ -20,7 +20,6 @@ class UserRegistrationSchema(Schema):
 
 
 class UserSchema(Schema):
-    id = Str()
     full_name = Str(
         required=True, error_messages={'required': MSG_FIELD_REQUIRED}
     )
