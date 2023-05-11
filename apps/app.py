@@ -1,4 +1,5 @@
 import os
+import mongomock
 
 from flask import Flask
 
@@ -18,12 +19,14 @@ from apps.extensions.jwt import configure_jwt
 from apps.users.commands import createsuperuser
 
 
-def create_app(testing=None):
+def create_app(testing=False):
     app = Flask('api-users')
 
-    config_name = os.getenv("FLASK_ENV")
+    config_name = os.getenv("FLASK_CONFIG")
+
     if testing:
-        app.config.from_object('testing')
+        app.config.from_object(config['testing'])
+
     else:
         app.config.from_object(config[config_name])
 

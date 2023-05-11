@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-flask = {extras = ["async"], version = "2.2.2"}
+flask = "2.2.2"
 flask-restful = "^0.3.9"
 python-dotenv = "^1.0.0"
 pytz = "^2023.3"
@@ -23,6 +23,10 @@ structlog = "^23.1.0"
 pytest = "^7.3.1"
 pytest-cov = "^4.0.0"
 pytest-runner = "^6.0.0"
+mongomock = "^4.1.2"
+factory-boy = "^3.2.1"
+snapshottest = "^0.6.0"
+coverage-badge = "^1.1.0"
 
 
 [tool.poetry.group.docs.dependencies]
@@ -33,6 +37,7 @@ mkdocs = "^1.4.2"
 ipdb = "^0.13.13"
 isort = "^5.12.0"
 flask-shell-ipython = "^0.5.1"
+pylint = "^2.17.4"
 
 
 [tool.poetry.group.prod.dependencies]

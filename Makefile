@@ -5,23 +5,15 @@ GIT_CURRENT_BRANCH := ${shell git symbolic-ref --short HEAD}
 .DEFAULT: help
 
 help:
-	@echo "make clean aaaa:"
+	@echo "make clean:"
 	@echo "       Removes all pyc, pyo and __pycache__"
 	@echo ""
 	@echo "make clean-build:"
 	@echo "       Clear all build directories"
 	@echo ""
-	@echo "make setup_dev"
-	@echo "       Install dev dependencies and flake8 webhook"
-	@echo "       Needs virtualenv activated and git initalized"
-	@echo ""
 	@echo "make clone-dotenv"
 	@echo "       Creates .env file base on .env-example"
 	@echo "       Used by setup_dev command"
-	@echo ""
-	@echo "make setup"
-	@echo "       Install prod dependencies"
-	@echo "       Needs virtualenv activated and git initalized"
 	@echo ""
 	@echo "make isort:"
 	@echo "       Run isort command cli in development features"
@@ -61,16 +53,6 @@ clone-dotenv:
 	@cp .env-example .env
 	@echo "---- Finish clone ----"
 
-setup:
-	@echo "---- Installing Python dependencies ----"
-	@pip install -r requirements/prod.txt --upgrade
-
-setup_dev: clone-dotenv
-	@echo "---- Installing Python dev dependencies ----"
-	@pip install -r requirements/dev.txt --upgrade
-	@flake8 --install-hook git
-	@git config --bool flake8.strict true
-
 coverage: test
 	@echo "---- Create coverage ----"
 	@coverage-badge > static/coverage.svg
@@ -79,16 +61,13 @@ isort:
 	sh -c "isort --skip-glob=.tox --recursive . "
 
 lint: clean
-	flake8
+	pylint
 
 test:
-	@pytest --verbose --cov=apps --color=yes tests/
+	@pytest -s --verbose --disable-warnings --cov=apps --color=yes tests/
 
 dev: lint test
-	python application.py
-
-run:
-	python application.py
+	python run.py
 
 release:
 	@echo "creating a new release ${v}"
