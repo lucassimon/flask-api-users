@@ -19,9 +19,9 @@ if isfile(_ENV_FILE):
 
 @pytest.fixture(scope='session')
 def client():
-    from apps import create_app
+    from apps.app import create_app
     # instancia nossa função factory criada anteriormente
-    flask_app = create_app('testing')
+    flask_app = create_app()
 
     # O Flask fornece um caminho para testar a aplicação
     # utilizando o Werkzeug test Client
