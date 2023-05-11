@@ -18,6 +18,7 @@ flask-jwt-extended = "^4.4.4"
 pyee = "^9.0.4"
 structlog = "^23.1.0"
 mongomock = "^4.1.2"
+flask-apispec = "^0.11.4"
 
 
 [tool.poetry.group.test.dependencies]

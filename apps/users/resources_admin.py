@@ -2,11 +2,12 @@
 from flask import request
 
 # Third
-from flask_restful import Resource
 from mongoengine.errors import FieldDoesNotExist
 from mongoengine.errors import NotUniqueError, ValidationError
+from flask_restful import Resource
 from flask_jwt_extended import get_jwt_identity, jwt_required
-
+from flask_apispec import marshal_with, doc, use_kwargs
+from flask_apispec.views import MethodResource
 
 # Apps
 from apps.extensions.responses import resp_ok, resp_exception, resp_data_invalid, resp_already_exists
@@ -27,7 +28,10 @@ from .exceptions import (
 from .commands import GetUserByCpfCnpjCommand
 
 
-class AdminUserPageList(Resource):
+class AdminUserPageList(MethodResource, Resource):
+
+    @doc(description='Listar usuários/customers paginado', tags=['Users'])
+    @marshal_with(UserSchema)
     @jwt_required()
     def get(self, page_id=1):
         # inicializa o schema podendo conter varios objetos
@@ -86,7 +90,10 @@ class AdminUserPageList(Resource):
             )
 
 
-class AdminUserResourceByCpf(Resource):
+class AdminUserResourceByCpf(MethodResource, Resource):
+
+    @doc(description='Buscar usuário por cpf ou cnpj', tags=['Users'])
+    @marshal_with(UserSchema)
     @jwt_required()
     def get(self, cpf_cnpj):
         try:

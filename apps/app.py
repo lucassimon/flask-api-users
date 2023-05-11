@@ -7,10 +7,12 @@ from flask import Flask
 # from datetime import datetime
 # from datetime import timedelta
 # from datetime import timezone
+from apispec import APISpec
+from apispec.ext.marshmallow import MarshmallowPlugin
+from flask_apispec.extension import FlaskApiSpec
 
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended import create_access_token, set_access_cookies
-
 # Realize a importação da função que configura a api
 from apps.extensions.api import configure_api
 from apps.extensions.config import config
@@ -29,6 +31,17 @@ def create_app(testing=False):
 
     else:
         app.config.from_object(config[config_name])
+
+    app.config.update({
+        'APISPEC_SPEC': APISpec(
+            title='Flask Api Users',
+            version='v1',
+            plugins=[MarshmallowPlugin()],
+            openapi_version='2.0.0'
+        ),
+        'APISPEC_SWAGGER_URL': '/swagger/',  # URI to access API Doc JSON
+        'APISPEC_SWAGGER_UI_URL': '/swagger-ui/'  # URI to access UI of API Doc
+    })
 
     # Configure MongoEngine
     db.init_app(app)

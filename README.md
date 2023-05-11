@@ -1,6 +1,13 @@
 # flask-api-users
 
-Api para gerenciamento de usuários/customers com Flask Framework, MongoDB e autenticação JWT
+Api para gerenciamento de usuários e administradores com Flask Framework, MongoDB e autenticação JWT.
+
+Os administradores podem gerenciar usuarios cadastrados no micro serviço.
+
+Os usuários pode ser qualquer ator, como por exemplo customers, que necessita se autenticar e ter acesso ao perfil, configurações e etc...
+
+Para autenticação utilizamos o JWT tanto para admins quanto para users.
+
 
 ![coverage](./static/coverage.svg)
 
@@ -62,7 +69,7 @@ Criar superuser via docker.
 
 ![](./static/create-superuser-with-docker.gif)
 
-Criando um usuario  ou um customers de exemplo, com validação de cpf
+## Criando um usuario  ou um customers de exemplo, com validação de cpf
 
 ![Create user example](./static/docker-create-user.gif)
 
@@ -75,6 +82,12 @@ A ser testado. Não utilize essa opção por enquanto.
 Pode baixar a coleção do insomnia na pasta static e importar no app
 
 [Clique aqui para baixar](./static/Insomnia_2023-05-11.json)
+
+## OpenApi3
+
+Levante o servidor `python run.py` e acesse no browser o endereço `http://0.0.0.0:8080/swagger-ui/#/`
+
+![OpenApi](./static/openapi3.png)
 
 ## Testes
 

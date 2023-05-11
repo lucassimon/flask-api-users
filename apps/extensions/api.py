@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
-
 # Third
+from flask_apispec.extension import FlaskApiSpec
+
 # Importamos as classes API e Resource
 from flask_restful import Api, Resource
 
@@ -43,3 +43,10 @@ def configure_api(app):
 
     # inicializamos a api com as configurações do flask vinda por parâmetro
     api.init_app(app)
+
+    docs = FlaskApiSpec(app)
+    docs.register(SignUp)
+    docs.register(AdminUserPageList)
+    docs.register(AdminUserResourceByCpf)
+    docs.register(AuthResource)
+    docs.register(AuthAdminResource)
