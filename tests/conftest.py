@@ -63,7 +63,7 @@ def auth(client):
 
     admin = AdminFactory.create(
         id="5ce089d4fb5d1b3bd3ad96a2",
-        name="Admin",
+        full_name="Admin",
         email="supertest@mail.com",
         password=generate_password("123456"),
     )

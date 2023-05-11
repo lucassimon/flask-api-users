@@ -9,13 +9,16 @@ from json import dumps, loads
 from apps.extensions.messages import MSG_NO_DATA, MSG_INVALID_DATA, MSG_PASSWORD_DIDNT_MATCH
 from apps.extensions.messages import MSG_FIELD_REQUIRED, MSG_RESOURCE_CREATED, MSG_ALREADY_EXISTS
 from apps.extensions.responses import resp_data_invalid
-
+from apps.users.models import User
 
 class TestSignUp:
 
     def setup_method(self):
         self.data = {}
         self.ENDPOINT = '/users'
+
+    def teardown_method(self):
+        User.objects.delete()
 
     def test_response_422_when_empty_payload(self, client):
         resp = client.post(

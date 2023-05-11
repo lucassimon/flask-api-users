@@ -32,7 +32,7 @@ def test_msg_no_data():
 
 
 def test_msg_password_wrong():
-    assert MSG_PASSWORD_DIDNT_MATCH == 'As senhas não conferem.'
+    assert MSG_PASSWORD_DIDNT_MATCH == 'Password did not matches'
 
 
 def test_msg_resource_created():
