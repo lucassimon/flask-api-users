@@ -1,8 +1,11 @@
 # Third
+from bcrypt import gensalt, hashpw
 
 # Apps
-
 # Local
+
+def generate_password(password: str):
+    return hashpw(password.encode(), gensalt(12))
 
 
 def check_password_in_signup(password: str, confirm_password: str):
@@ -20,7 +23,13 @@ def check_password_in_signup(password: str, confirm_password: str):
 
 class Cpf:
     def __init__(self, cpf):
-        self.cpf = cpf
+        # forçando inteiros para serem transformados para string
+        self.cpf = str(cpf)
+        self.normalize_cpf_cnpj()
+
+    def normalize_cpf_cnpj(self):
+        # normalizo a string retirando caracteres especiais
+        self.cpf = self.cpf.strip().replace(".", "").replace("-", "").replace("/", "")
 
     def validate(self):
         if self.check_len():

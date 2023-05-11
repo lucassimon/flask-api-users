@@ -7,8 +7,8 @@ from flask_jwt_extended import create_access_token, create_refresh_token
 
 from apps.extensions.logging import make_logger
 
-from .schemas import CreateAdminInput, CreateUserInput, CreateUserOutput
-from .use_case import CreateUserUseCase
+from .schemas import CreateAdminInput, CreateUserInput, CreateUserOutput, UserSchema
+from .use_case import CreateUserUseCase, GetUserByCpfCnpjUseCase
 from .repositories import UserMongoRepository, AdminMongoRepository
 from .exceptions import UserSchemaValidationErrorException, UserMongoNotUniqueException, UserMongoValidationErrorException
 
@@ -143,3 +143,29 @@ def createsuperuser(name: str, email: str, password: str):
 
     except Exception:
         click.echo(f"An error occurred. Superuser not created")
+
+
+class GetUserByCpfCnpjCommand:
+    @staticmethod
+    def get_user_by_cpf_cnpj(current_user, cpf_cnpj, *_, **kwargs: dict[str, Any]):
+        try:
+            if logger:
+                logger.info("users.GetUserByCpfCnpj.command", message="Get the user and check the password")
+
+            repo: AdminMongoRepository = AdminMongoRepository()
+            use_case: GetUserByCpfCnpjUseCase = GetUserByCpfCnpjUseCase(repo=repo, logger=logger)
+
+            if logger:
+                logger.info("users.GetUserByCpfCnpj.command", message="Execute use case")
+
+            output: UserSchema = use_case.execute(current_user=current_user, cpf_cnpj=cpf_cnpj)
+            return output
+
+        except Exception as exc:
+            raise exc
+
+    @staticmethod
+    def run(current_user, cpf_cnpj, *args, **kwargs: dict[str, Any]):
+        output = GetUserByCpfCnpjCommand.get_user_by_cpf_cnpj(current_user=current_user, cpf_cnpj=cpf_cnpj, *args, **kwargs)
+
+        return output

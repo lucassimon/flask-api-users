@@ -56,7 +56,8 @@ class CreateUserInput(Schema):
 
     def normalize_cpf_cnpj(self, value, **kwargs):
         # normalizo a string retirando caracteres especiais
-        return value.strip().replace(".", "").replace("-", "").replace("/", "")
+        cpf_instance = Cpf(value)
+        return cpf_instance.cpf
 
     @post_load
     def lower_email(self, payload, **kwargs):
@@ -96,6 +97,7 @@ class CreateUserInput(Schema):
 
 
 class UserSchema(Schema):
+    id = Str()
     full_name = Str(
         required=True, error_messages={'required': MSG_FIELD_REQUIRED}
     )
@@ -103,6 +105,7 @@ class UserSchema(Schema):
         required=True, error_messages={'required': MSG_FIELD_REQUIRED}
     )
     cpf_cnpj = Str()
+    date_of_birth = Date()
     active = Boolean()
 
 

@@ -7,9 +7,10 @@ from mongoengine.errors import FieldDoesNotExist
 from mongoengine.errors import NotUniqueError, ValidationError
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
+
 # Apps
 from apps.extensions.responses import resp_ok, resp_exception, resp_data_invalid, resp_already_exists
-from apps.extensions.responses import resp_notallowed_user
+from apps.extensions.responses import resp_notallowed_user, resp_does_not_exist
 
 from apps.extensions.messages import MSG_RESOURCE_FETCHED_PAGINATED, MSG_RESOURCE_FETCHED
 from apps.extensions.messages import MSG_NO_DATA, MSG_RESOURCE_UPDATED, MSG_INVALID_DATA
@@ -19,22 +20,27 @@ from apps.extensions.messages import MSG_ALREADY_EXISTS, MSG_RESOURCE_DELETED
 from .models import User, Admin
 from .schemas import UserSchema, UserUpdateSchema
 from .repositories import AdminMongoRepository
+from .exceptions import (
+    UserMongoNotUniqueException, UserMongoValidationErrorException,
+    UserMongoDoesNotExistException
+)
+from .commands import GetUserByCpfCnpjCommand
 
 
 class AdminUserPageList(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self, page_id=1):
         # inicializa o schema podendo conter varios objetos
         schema = UserSchema(many=True)
         # incializa o page_size sempre com 10
         page_size = 10
 
-        current_user = AdminMongoRepository().get_user_by_email(get_jwt_identity())
+        current_user = AdminMongoRepository().get_admin_by_email(get_jwt_identity())
 
         if not isinstance(current_user, Admin):
             return current_user
 
-        if not (current_user.is_active()) and current_user.is_admin():
+        if not (current_user.is_active()):
             return resp_notallowed_user('Users')
 
         # se enviarmos o page_size como parametro
@@ -47,32 +53,64 @@ class AdminUserPageList(Resource):
                 page_size = int(request.args.get('page_size'))
 
         try:
-            # buscamos todos os usuarios da base utilizando o paginate
-            users = User.objects().paginate(page_id, page_size)
+            pagination = AdminMongoRepository().get_users_with_pagination(page_id=page_id, page_size=page_size)
 
-        except FieldDoesNotExist as e:
-            return resp_exception('Users', description=e.__str__())
+            # criamos dados extras a serem respondidos
+            extra = {
+                'page': pagination.page, 'pages': pagination.pages, 'total': pagination.total,
+                'params': {'page_size': page_size}
+            }
 
-        except Exception as e:
-            return resp_exception('Users', description=e.__str__())
+            # fazemos um dump dos objetos pesquisados
+            result = schema.dump(pagination.items)
 
-        # criamos dados extras a serem respondidos
-        extra = {
-            'page': users.page, 'pages': users.pages, 'total': users.total,
-            'params': {'page_size': page_size}
-        }
+            return resp_ok(
+                'Users', MSG_RESOURCE_FETCHED_PAGINATED.format('usuários'),  data=result,
+                **extra
+            )
+        except UserMongoNotUniqueException as exc:
+            return resp_already_exists(resource='users', description=f"usuário")
 
-        # fazemos um dump dos objetos pesquisados
-        result = schema.dump(users.items)
+        except UserMongoValidationErrorException as exc:
+            return resp_data_invalid(
+                resource='users',
+                errors=exc.errors,
+                msg=exc.__str__()
+            )
 
-        return resp_ok(
-            'Users', MSG_RESOURCE_FETCHED_PAGINATED.format('usuários'),  data=result.data,
-            **extra
-        )
+        except Exception as exc:
+            return resp_exception(
+                resource='users',
+                description='An error occurred',
+                msg=exc.__str__()
+            )
+
+
+class AdminUserResourceByCpf(Resource):
+    @jwt_required()
+    def get(self, cpf_cnpj):
+        try:
+            current_user = get_jwt_identity()
+            output = GetUserByCpfCnpjCommand.run(current_user=current_user, cpf_cnpj=cpf_cnpj)
+            # Retorno 200 o meu endpoint
+            response = resp_ok(
+                'Users', MSG_RESOURCE_FETCHED.format("Usuário"),  data=output,
+            )
+            return response
+
+        except UserMongoDoesNotExistException as exc:
+            return resp_does_not_exist(resource='users', description=f"usuário")
+
+        except Exception as exc:
+            return resp_exception(
+                resource='users',
+                description='An error occurred',
+                msg=exc.__str__()
+            )
 
 
 class AdminUserResource(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self, user_id):
         result = None
         schema = UserSchema()
@@ -92,10 +130,10 @@ class AdminUserResource(Resource):
         result = schema.dump(user)
 
         return resp_ok(
-            'Users', MSG_RESOURCE_FETCHED.format('Usuários'),  data=result.data
+            'Users', MSG_RESOURCE_FETCHED.format('Usuários'),  data=result
         )
 
-    @jwt_required
+    @jwt_required()
     def put(self, user_id):
         result = None
         schema = UserSchema()
@@ -123,12 +161,11 @@ class AdminUserResource(Resource):
             return user
 
         # carrego meus dados de acordo com o schema de atualização
-        data, errors = update_schema.load(req_data)
+        try:
+            data = update_schema.load(req_data)
 
-        # em caso de erros retorno uma resposta 422 com os erros de
-        # validação do schema
-        if errors:
-            return resp_data_invalid('Users', errors)
+        except ValidationError as err:
+            return resp_data_invalid('Users', err.messages)
 
         email = data.get('email', None)
 
@@ -139,29 +176,31 @@ class AdminUserResource(Resource):
             )
 
         try:
-            # para cada chave dentro do dados do update schema
-            # atribuimos seu valor
-            for i in data.keys():
-                user[i] = data[i]
+            user = AdminMongoRepository().update_user(user, data)
+            result = schema.dump(user)
 
-            user.save()
+            return resp_ok(
+                'Users', MSG_RESOURCE_UPDATED.format('Usuário'),  data=result
+            )
 
-        except NotUniqueError:
-            return resp_already_exists('Users', 'usuário')
+        except UserMongoNotUniqueException as exc:
+            return resp_already_exists(resource='users', description=f"usuário")
 
-        except ValidationError as e:
-            return resp_exception('Users', msg=MSG_INVALID_DATA, description=e.__str__())
+        except UserMongoValidationErrorException as exc:
+            return resp_data_invalid(
+                resource='users',
+                errors=exc.errors,
+                msg=exc.__str__()
+            )
 
-        except Exception as e:
-            return resp_exception('Users', description=e.__str__())
+        except Exception as exc:
+            return resp_exception(
+                resource='users',
+                description='An error occurred',
+                msg=exc.__str__()
+            )
 
-        result = schema.dump(user)
-
-        return resp_ok(
-            'Users', MSG_RESOURCE_UPDATED.format('Usuário'),  data=result.data
-        )
-
-    @jwt_required
+    @jwt_required()
     def delete(self, user_id):
         current_user = AdminMongoRepository().get_user_by_email(get_jwt_identity())
 
@@ -180,16 +219,23 @@ class AdminUserResource(Resource):
             return user
 
         try:
-            user.active = False
-            user.save()
+            AdminMongoRepository().delete_user(user)
+            return resp_ok('Users', MSG_RESOURCE_DELETED.format('Usuário'))
 
-        except NotUniqueError:
-            return resp_already_exists('Users', 'usuário')
+        except UserMongoNotUniqueException as exc:
+            return resp_already_exists(resource='users', description=f"usuário")
 
-        except ValidationError as e:
-            return resp_exception('Users', msg=MSG_INVALID_DATA, description=e.__str__())
+        except UserMongoValidationErrorException as exc:
+            return resp_data_invalid(
+                resource='users',
+                errors=exc.errors,
+                msg=exc.__str__()
+            )
 
-        except Exception as e:
-            return resp_exception('Users', description=e.__str__())
+        except Exception as exc:
+            return resp_exception(
+                resource='users',
+                description='An error occurred',
+                msg=exc.__str__()
+            )
 
-        return resp_ok('Users', MSG_RESOURCE_DELETED.format('Usuário'))
