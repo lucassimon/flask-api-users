@@ -62,7 +62,7 @@ Criar superuser via docker.
 
 ![](./static/create-superuser-with-docker.gif)
 
-Criando um usuario de exemplo
+Criando um usuario  ou um customers de exemplo, com validação de cpf
 
 ![Create user example](./static/docker-create-user.gif)
 
@@ -74,7 +74,7 @@ A ser testado. Não utilize essa opção por enquanto.
 
 Pode baixar a coleção do insomnia na pasta static e importar no app
 
-![](./static/Insomnia_2023-05-11.json)
+[](./static/Insomnia_2023-05-11.json)
 
 ## Testes
 
