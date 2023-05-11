@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Flask
 from flask import request
 
@@ -18,9 +16,9 @@ from apps.extensions.messages import MSG_NO_DATA, MSG_RESOURCE_UPDATED, MSG_INVA
 from apps.extensions.messages import MSG_ALREADY_EXISTS, MSG_RESOURCE_DELETED
 
 # Local
-from .models import User
+from .models import User, Admin
 from .schemas import UserSchema, UserUpdateSchema
-from .utils import get_user_by_id, exists_email_in_users, get_user_by_email
+from .repositories import AdminMongoRepository
 
 
 class AdminUserPageList(Resource):
@@ -31,9 +29,9 @@ class AdminUserPageList(Resource):
         # incializa o page_size sempre com 10
         page_size = 10
 
-        current_user = get_user_by_email(get_jwt_identity())
+        current_user = AdminMongoRepository().get_user_by_email(get_jwt_identity())
 
-        if not isinstance(current_user, User):
+        if not isinstance(current_user, Admin):
             return current_user
 
         if not (current_user.is_active()) and current_user.is_admin():
@@ -78,15 +76,15 @@ class AdminUserResource(Resource):
     def get(self, user_id):
         result = None
         schema = UserSchema()
-        current_user = get_user_by_email(get_jwt_identity())
+        current_user = AdminMongoRepository().get_user_by_email(get_jwt_identity())
 
-        if not isinstance(current_user, User):
+        if not isinstance(current_user, Admin):
             return current_user
 
         if not (current_user.is_active()) and current_user.is_admin():
             return resp_notallowed_user('Users')
 
-        user = get_user_by_id(user_id)
+        user = AdminMongoRepository().get_user_by_id(user_id)
 
         if not isinstance(user, User):
             return user
@@ -104,9 +102,9 @@ class AdminUserResource(Resource):
         update_schema = UserUpdateSchema()
         req_data = request.get_json() or None
         email = None
-        current_user = get_user_by_email(get_jwt_identity())
+        current_user = AdminMongoRepository().get_user_by_email(get_jwt_identity())
 
-        if not isinstance(current_user, User):
+        if not isinstance(current_user, Admin):
             return current_user
 
         if not (current_user.is_active()) and current_user.is_admin():
@@ -117,7 +115,7 @@ class AdminUserResource(Resource):
             return resp_data_invalid('Users', [], msg=MSG_NO_DATA)
 
         # Busco o usuário na coleção users pelo seu id
-        user = get_user_by_id(user_id)
+        user = AdminMongoRepository().get_user_by_id(user_id)
 
         # se não for uma instancia do modelo User retorno uma resposta
         # da requisição http do flask
@@ -135,7 +133,7 @@ class AdminUserResource(Resource):
         email = data.get('email', None)
 
         # Valido se existe um email na coleção de usuários
-        if email and exists_email_in_users(email, user):
+        if email and AdminMongoRepository().exists_email_in_users(email, user):
             return resp_data_invalid(
                 'Users', [{'email': [MSG_ALREADY_EXISTS.format('usuário')]}]
             )
@@ -165,16 +163,16 @@ class AdminUserResource(Resource):
 
     @jwt_required
     def delete(self, user_id):
-        current_user = get_user_by_email(get_jwt_identity())
+        current_user = AdminMongoRepository().get_user_by_email(get_jwt_identity())
 
-        if not isinstance(current_user, User):
+        if not isinstance(current_user, Admin):
             return current_user
 
         if not (current_user.is_active()) and current_user.is_admin():
             return resp_notallowed_user('Users')
 
         # Busco o usuário na coleção users pelo seu id
-        user = get_user_by_id(user_id)
+        user = AdminMongoRepository().get_user_by_id(user_id)
 
         # se não for uma instancia do modelo User retorno uma resposta
         # da requisição http do flask

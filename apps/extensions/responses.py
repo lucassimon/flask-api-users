@@ -68,7 +68,7 @@ def resp_does_not_exist(resource: str, description: str):
 
 def resp_already_exists(resource: str, description: str):
     '''
-    Responses 400
+    Responses 409
     '''
 
     if not isinstance(resource, str):
@@ -79,7 +79,7 @@ def resp_already_exists(resource: str, description: str):
         'message': MSG_ALREADY_EXISTS.format(description),
     })
 
-    resp.status_code = 400
+    resp.status_code = 409
 
     return resp
 

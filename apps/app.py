@@ -1,9 +1,11 @@
-# -*- coding: utf-8 -*-
 import os
+
 from flask import Flask
-from datetime import datetime
-from datetime import timedelta
-from datetime import timezone
+
+
+# from datetime import datetime
+# from datetime import timedelta
+# from datetime import timezone
 
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended import create_access_token, set_access_cookies
@@ -13,13 +15,17 @@ from apps.extensions.api import configure_api
 from apps.extensions.config import config
 from apps.extensions.db import db
 from apps.extensions.jwt import configure_jwt
+from apps.users.commands import createsuperuser
 
 
-def create_app():
+def create_app(testing=None):
     app = Flask('api-users')
 
     config_name = os.getenv("FLASK_ENV")
-    app.config.from_object(config[config_name])
+    if testing:
+        app.config.from_object('testing')
+    else:
+        app.config.from_object(config[config_name])
 
     # Configure MongoEngine
     db.init_app(app)
@@ -29,6 +35,9 @@ def create_app():
 
     # executa a chamada da função de configuração
     configure_api(app)
+
+    # add command function to cli commands
+    app.cli.add_command(createsuperuser)
 
     # Implicit Refreshing With Cookies¶
     # @app.after_request

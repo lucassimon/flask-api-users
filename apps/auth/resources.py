@@ -15,7 +15,7 @@ from marshmallow import ValidationError
 # Apps
 from apps.users.models import User
 from apps.users.schemas import UserSchema
-from apps.users.utils import get_user_by_email
+from apps.users.repositories import UserMongoRepository
 from apps.extensions.messages import MSG_NO_DATA, MSG_TOKEN_CREATED
 from apps.extensions.responses import resp_ok, resp_data_invalid, resp_notallowed_user
 
@@ -48,7 +48,7 @@ class AuthResource(Resource):
                 return resp_data_invalid('Users', err)
 
         # Buscamos nosso usuário pelo email
-        user = get_user_by_email(data.get('email'))
+        user = UserMongoRepository().get_user_by_email(data.get('email'))
 
         # Em caso de exceção ou não é uma instancia do Modelo de User
         # retornamos a resposta

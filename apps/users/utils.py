@@ -1,14 +1,8 @@
-# -*- coding: utf-8
-
 # Third
 
-from mongoengine.errors import FieldDoesNotExist, DoesNotExist, MultipleObjectsReturned
-
 # Apps
-from apps.extensions.responses import resp_exception, resp_does_not_exist
 
 # Local
-from .models import User
 
 
 def check_password_in_signup(password: str, confirm_password: str):
@@ -24,55 +18,47 @@ def check_password_in_signup(password: str, confirm_password: str):
 
     return True
 
+class Cpf:
+    def __init__(self, cpf):
+        self.cpf = cpf
 
-def get_user_by_id(user_id: str):
-    try:
-        # buscamos todos os usuários da base utilizando o paginate
-        return User.objects.get(id=user_id)
+    def validate(self):
+        if self.check_len():
+            return False
 
-    except DoesNotExist:
-        return resp_does_not_exist('Users', 'Usuário')
+        first_digit = self.calculate_first_digit()
+        if self.cpf[9] != str(first_digit):
+            return False
 
-    except FieldDoesNotExist as e:
-        return resp_exception('Users', description=e.__str__())
+        second_digit = self.calculate_second_digit()
+        if self.cpf[10] != str(second_digit):
+            return False
 
-    except Exception as e:
-        return resp_exception('Users', description=e.__str__())
-
-
-def exists_email_in_users(email: str, instance=None):
-    """
-    Verifico se existe um usuário com aquele email
-    """
-    user = None
-
-    try:
-        user = User.objects.get(email=email)
-
-    except DoesNotExist:
-        return False
-
-    except MultipleObjectsReturned:
         return True
 
-    # verifico se o id retornado na pesquisa é mesmo da minha instancia
-    # informado no parâmetro
-    if instance and instance.id == user.id:
-        return False
+    def check_len(self):
+        return len(self.cpf) != 11
 
-    return True
+    def calculate_first_digit(self):
+        first_digit = 0
+        for i in range(10, 1, -1):
+            first_digit += int(self.cpf[10 - i]) * i
 
+        rest = first_digit % 11
 
-def get_user_by_email(email: str):
-    try:
-        # buscamos todos os usuários da base utilizando o paginate
-        return User.objects.get(email=email)
+        return self.cpf_rule(rest)
 
-    except DoesNotExist:
-        return resp_does_not_exist('Users', 'Usuário')
+    def calculate_second_digit(self):
+        second_digit = 0
+        for i in range(11, 1, -1):
+            second_digit += int(self.cpf[11 - i]) * i
 
-    except FieldDoesNotExist as e:
-        return resp_exception('Users', description=e.__str__())
+        rest = second_digit % 11
 
-    except Exception as e:
-        return resp_exception('Users', description=e.__str__())
+        return self.cpf_rule(rest)
+
+    def cpf_rule(self, rest):
+        if rest < 2:
+            return 0
+        else:
+            return 11 - rest

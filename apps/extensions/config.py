@@ -7,9 +7,9 @@ from datetime import timedelta
 
 class Config:
     SECRET_KEY = getenv('SECRET_KEY')
-    PORT = int(getenv('PORT', 5000))
+    PORT = int(getenv('PORT', 8080))
     DEBUG = getenv('DEBUG') or False
-    MONGODB_HOST = getenv('MONGODB_URI', 'mongodb://localhost:27017/api-users')
+    MONGODB_HOST = getenv('MONGODB_URI', 'mongodb://0.0.0.0:27017/api-users')
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(
         minutes=int(getenv('JWT_ACCESS_TOKEN_EXPIRES', 20))
     )

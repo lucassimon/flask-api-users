@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Python
 from datetime import datetime
 
@@ -38,7 +37,10 @@ class Roles(EmbeddedDocument):
     """
     Roles permissions
     """
-    admin = BooleanField(default=False)
+    superuser = BooleanField(default=True)
+    manager = BooleanField(default=False)
+    coordinators = BooleanField(default=False)
+    vendors = BooleanField(default=False)
 
 
 class UserMixin(me.Document):
@@ -52,23 +54,30 @@ class UserMixin(me.Document):
 
     email = EmailField(required=True, unique=True)
     password = StringField(required=True)
-    roles = EmbeddedDocumentField(Roles, default=Roles)
     created = DateTimeField(default=datetime.now)
-    active = BooleanField(default=False)
+    active = BooleanField(default=True)
 
     def is_active(self):
         return self.active
 
-    def is_admin(self):
-        return self.roles.admin
-
 
 class User(UserMixin):
     '''
-    Users are Buyers
+    Users
     '''
     meta = {'collection': 'users'}
 
     full_name = StringField(required=True)
-    cpf_cnpj = StringField(default='')
+    cpf_cnpj = StringField(required=True, unique=True)
+    date_of_birth = DateTimeField(required=True)
     address = EmbeddedDocumentField(Address, default=Address)
+
+
+class Admin(UserMixin):
+    '''
+    Admin users
+    '''
+    meta = {'collection': 'admins'}
+
+    full_name = StringField(required=True)
+    roles = EmbeddedDocumentField(Roles, default=Roles)
