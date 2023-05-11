@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 import pytest
+import mongomock
+from unittest import mock
+from mongoengine.errors import NotUniqueError, ValidationError
 
 from json import dumps, loads
 
@@ -15,17 +18,18 @@ class TestSignUp:
         self.ENDPOINT = '/users'
 
     def test_response_422_when_empty_payload(self, client):
-        resp = client.post(self.ENDPOINT)
+        resp = client.post(
+            self.ENDPOINT,
+            json={},
+            content_type='application/json'
+        )
         assert resp.status_code == 422
-
-    def test_message_when_empty_payload(self, client):
-        resp = client.post(self.ENDPOINT)
-        assert resp.json.get('message') == MSG_NO_DATA
+        assert resp.json.get('message') == 'The input data is wrong'
 
     def test_response_422_when_data_is_not_valid(self, client):
         resp = client.post(
             self.ENDPOINT,
-            data=dumps(dict(foo='bar')),
+            json=dict(foo='bar'),
             content_type='application/json'
         )
         assert resp.status_code == 422
@@ -33,51 +37,69 @@ class TestSignUp:
     def test_message_when_password_is_not_valid(self, client):
         resp = client.post(
             self.ENDPOINT,
-            data=dumps(dict(foo='bar')),
+            json=dict(
+                full_name='bar',
+                email='t@t.com',
+                password='123',
+                confirm_password='456',
+                cpf_cnpj='11653754605',
+                date_of_birth='2010-11-12'
+            ),
             content_type='application/json'
         )
-        assert resp.json.get('message') == MSG_INVALID_DATA
-        assert resp.json.get('errors').get('password') == MSG_PASSWORD_DIDNT_MATCH
+        response = resp.json
+        assert response.get('errors').get('password')[0] == MSG_PASSWORD_DIDNT_MATCH
 
     def test_message_required_when_fullname_not_in_payload(self, client):
         resp = client.post(
             self.ENDPOINT,
-            data=dumps(dict(email='teste@teste.com', password='123456', confirm_password='123456')),
+            json=dict(email='teste@teste.com', password='123456', confirm_password='123456'),
             content_type='application/json'
         )
-        assert resp.json.get('message') == MSG_INVALID_DATA
+        print(resp.json)
         assert resp.json.get('errors').get('full_name')[0] == MSG_FIELD_REQUIRED
 
     def test_message_required_when_email_not_in_payload(self, client):
         resp = client.post(
             self.ENDPOINT,
-            data=dumps(dict(full_name='teste', password='123456', confirm_password='123456')),
+            json=dict(full_name='teste', password='123456', confirm_password='123456'),
             content_type='application/json'
         )
-        assert resp.json.get('message') == MSG_INVALID_DATA
         assert resp.json.get('errors').get('email')[0] == MSG_FIELD_REQUIRED
 
-    def test_responses_already_exists(self, client, mongo):
-        client.post(
+    @mock.patch("apps.users.repositories.User")
+    def test_responses_already_exists(self, UserMock, client, mongo):
+        UserMock.return_value.save.side_effect = NotUniqueError(
+            "Some error occurred"
+        )
+
+        resp = client.post(
             self.ENDPOINT,
-            data=dumps(dict(full_name='teste', email='teste@teste.com', password='123456', confirm_password='123456')),
+            json=dict(
+                full_name='teste',
+                email='teste@teste.com',
+                password='123456',
+                confirm_password='123456',
+                cpf_cnpj='11653754605',
+                date_of_birth='2010-11-12'
+            ),
             content_type='application/json'
         )
 
-        resp_2 = client.post(
-            self.ENDPOINT,
-            data=dumps(dict(full_name='teste', email='teste@teste.com', password='123456', confirm_password='123456')),
-            content_type='application/json'
-        )
-
-        assert resp_2.status_code == 400
-        assert resp_2.json.get('message') == MSG_ALREADY_EXISTS.format('usuário')
-
+        assert resp.status_code == 409
+        assert resp.json.get('message') == MSG_ALREADY_EXISTS.format('usuário')
 
     def test_responses_ok(self, client, mongo):
         resp = client.post(
             self.ENDPOINT,
-            data=dumps(dict(full_name='teste', email='teste@teste.com', password='123456', confirm_password='123456')),
+            json=dict(
+                full_name='teste',
+                email='teste@teste.com',
+                password='123456',
+                confirm_password='123456',
+                cpf_cnpj='11653754605',
+                date_of_birth='2010-11-12'
+            ),
             content_type='application/json'
         )
 

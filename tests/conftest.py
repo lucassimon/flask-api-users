@@ -21,7 +21,7 @@ if isfile(_ENV_FILE):
 def client():
     from apps.app import create_app
     # instancia nossa função factory criada anteriormente
-    flask_app = create_app()
+    flask_app = create_app(testing=True)
 
     # O Flask fornece um caminho para testar a aplicação
     # utilizando o Werkzeug test Client
@@ -43,9 +43,35 @@ def client():
 @pytest.fixture(scope='function')
 def mongo(request, client):
 
-    def fin():
-        from apps.users.models import User
-        User.objects.all().delete()
-        print('\n[teardown] disconnect from db')
+    from apps.extensions.db import db
 
-    fin()
+    yield db
+
+    def fin(db):
+        print("\n[teardown] disconnect from db")
+
+    db.connection.drop_database("api-users-test")
+    db.connection.close()
+    fin(db)
+
+
+@pytest.fixture(scope="session")
+def auth(client):
+    from tests.factories.users import AdminFactory
+    from flask_jwt_extended import create_access_token, create_refresh_token
+    from apps.users.utils import generate_password
+
+    admin = AdminFactory.create(
+        id="5ce089d4fb5d1b3bd3ad96a2",
+        name="Admin",
+        email="supertest@mail.com",
+        password=generate_password("123456"),
+    )
+    access_token = create_access_token(
+        identity=admin.email, expires_delta=False, fresh=True
+    )
+    refresh_token = create_refresh_token(identity=admin.email, expires_delta=False)
+    client.access_token = access_token
+    client.refresh_token = refresh_token
+    client.user_id = f"{admin.id}"
+    return client

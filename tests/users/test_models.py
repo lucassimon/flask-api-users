@@ -305,7 +305,7 @@ class TestUser:
         assert 'active' in self.model._fields
 
     def test_active_field_is_default_true(self):
-        assert self.model._fields['active'].default is False
+        assert self.model._fields['active'].default is True
 
     def test_is_active_is_false(self):
         assert self.model.is_active() is True
@@ -341,13 +341,13 @@ class TestUser:
         """
         Verifico se o campo cpf_cnpj é requirido
         """
-        assert self.model._fields['cpf_cnpj'].required is False
+        assert self.model._fields['cpf_cnpj'].required is True
 
     def test_cpf_cnpj_field_is_unique(self):
         """
         Verifico se o campo cpf_cnpj é unico
         """
-        assert self.model._fields['cpf_cnpj'].unique is False
+        assert self.model._fields['cpf_cnpj'].unique is True
 
     def test_cpf_cnpj_field_is_str(self):
         """
@@ -355,16 +355,13 @@ class TestUser:
         """
         assert isinstance(self.model._fields['cpf_cnpj'], StringField)
 
-    def test_cpf_cnpj_field_is_default_true(self):
-        assert self.model._fields['cpf_cnpj'].default == ''
-
     def test_all_fields_in_model(self):
         """
         Verifico se todos os campos estão de fato no meu modelo
         """
         fields = [
             'active', 'address', 'cpf_cnpj', 'created', 'email',
-            'full_name', 'id', 'password', 'roles'
+            'full_name', 'id', 'password', 'date_of_birth'
         ]
 
         model_keys = [i for i in self.model._fields.keys()]

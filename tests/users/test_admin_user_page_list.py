@@ -9,6 +9,8 @@ from apps.extensions.messages import MSG_RESOURCE_FETCHED_PAGINATED, MSG_EXCEPTI
 from apps.extensions.responses import resp_data_invalid
 
 
+# https://stackabuse.com/guide-to-flask-mongoengine-in-python/
+
 class TestAdminUserPageList:
 
     def setup_method(self):
