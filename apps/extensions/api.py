@@ -5,8 +5,8 @@
 from flask_restful import Api, Resource
 
 from apps.users.resources import SignUp
-from apps.users.resources_admin import AdminUserPageList, AdminUserResource
-from apps.auth.resources import AuthResource, RefreshTokenResource
+from apps.users.resources_admin import AdminUserPageList, AdminUserResource, AdminUserResourceByCpf
+from apps.auth.resources import AuthResource, AuthAdminResource, RefreshTokenResource
 
 
 # Criamos uma classe que extende de Resource
@@ -34,9 +34,11 @@ def configure_api(app):
     # rotas para os admins
     api.add_resource(AdminUserPageList, '/admin/users/page/<int:page_id>')
     api.add_resource(AdminUserResource, '/admin/users/<string:user_id>')
+    api.add_resource(AdminUserResourceByCpf, '/admin/users/cpf/<string:cpf_cnpj>')
 
     # rotas para autenticacao
     api.add_resource(AuthResource, '/auth')
+    api.add_resource(AuthAdminResource, '/auth/admin')
     api.add_resource(RefreshTokenResource, '/auth/refresh')
 
     # inicializamos a api com as configurações do flask vinda por parâmetro

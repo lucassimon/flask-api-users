@@ -19,15 +19,7 @@ def configure_jwt(app):
 
     @jwt.additional_claims_loader
     def add_claims_to_access_token(identity):
-        user = User.objects.get(email=identity)
-
-        # Podemos extender as informações do usuaŕio adicionando
-        # novos campos: active, roles, full_name e etc...
-
-        if user:
-            return {
-                'active': user.active
-            }
+        pass
 
     @jwt.expired_token_loader
     def my_expired_token_callback():

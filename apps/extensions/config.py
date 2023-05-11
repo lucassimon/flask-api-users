@@ -1,15 +1,16 @@
-# -*- coding: utf-8 -*-
-
 # Python
 from os import getenv
 from datetime import timedelta
 
+import mongomock
 
 class Config:
     SECRET_KEY = getenv('SECRET_KEY')
     PORT = int(getenv('PORT', 8080))
     DEBUG = getenv('DEBUG') or False
-    MONGODB_HOST = getenv('MONGODB_URI', 'mongodb://0.0.0.0:27017/api-users')
+    MONGODB_SETTINGS = {
+        'host': getenv('MONGODB_URI', 'mongodb://0.0.0.0:27017/api-users'),
+    }
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(
         minutes=int(getenv('JWT_ACCESS_TOKEN_EXPIRES', 20))
     )
@@ -26,7 +27,11 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     FLASK_ENV = 'testing'
     TESTING = True
-    MONGODB_HOST = getenv('MONGODB_URI_TEST')
+    MONGODB_SETTINGS = {
+        'db': 'api-users-test',
+        'host': 'mongodb://localhost',
+        'mongo_client_class': mongomock.MongoClient
+    }
 
 
 class ProductionConfig(Config):
