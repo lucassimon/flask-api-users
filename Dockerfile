@@ -20,20 +20,22 @@ RUN rm -rf /var/cache/apk/* && \
     rm -rf /var/cache/apk/* && \
     python -m venv /home/app/venv && \
     /home/app/venv/bin/pip install --upgrade pip && \
+    rm -rf /home/app/.config/pypoetry/ && \
     pip install poetry && \
     poetry config virtualenvs.path /home/app/venv && \
     poetry config virtualenvs.create false
 
 # DEVLOPMENT
 FROM base as dev
-USER 1000:1000
+# USER 1000:1000
 WORKDIR $HOME
 
 # CI
 FROM dev as ci
 WORKDIR $HOME
 COPY . .
-RUN source /home/app/venv/bin/activate && \
+RUN rm -rf /home/app/.config/pypoetry/ && \
+    source /home/app/venv/bin/activate && \
     poetry install --with dev,test,docs
 
 # PROD
@@ -41,7 +43,9 @@ FROM ci as build
 RUN rm -rf /home/app/venv && \
     python -m venv /home/app/venv && \
     pip install poetry && \
-    poetry install --only main,prod --without dev,test,docs
+    poetry config virtualenvs.path /home/app/venv && \
+    poetry config virtualenvs.create false && \
+    poetry install --with main,prod --without dev,test,docs
 
 # SHIPMENT
 

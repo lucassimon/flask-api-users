@@ -1,6 +1,0 @@
--r test.txt
-
-ipdb
-ipython
-flask-shell-ipython
-isort

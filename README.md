@@ -1,29 +1,50 @@
 # flask-api-users
 
-Uma api com Flask Framework, MongoDB e autenticação JWT
+Api para gerenciamento de usuários/customers com Flask Framework, MongoDB e autenticação JWT
 
 ![coverage](./static/coverage.svg)
-
-## Inicio
-
-Execute o `make setup_dev` com o virtualenv ativo e o git inicializado, para fazer o setup inicial da aplicação instalando as dependências de desenvolvimento.
-
-Caso queira pode customizar algumas variáveis de ambiente editando o arquivo `.env`.
-
 
 ## Crie MongoDB
 
 ```shell
-$ docker run --name mongo-latest -p 27017:27017 -d mongo
+docker run -itd --name mongo-latest -p 27017:27017 --network local-containers mongo
 ```
 
-## Excute a aplicação de dev
+## Setup com virtualenv
+
+Inicializar o virtualenv `python3 -m venv venv` e em seguida ativar o virtualenv `source venv/bin/activate`
+
+Se houver o `poetry` instalado pode executar `poetry install` ou instalar via pip `pip install -r requirements/base.txt`
+
+#### Excute a aplicação de dev
+
+Necessário que o mongodb esteja executando
 
 ```shell
-$ make dev
+$ python run.py
 ```
 
-## Excute a aplicação de dev via docker
+ou
+
+```shell
+$ flask run --host=0.0.0.0 --port=8080 --debugger
+```
+
+![Login and fetch users](./static/login-and-fetch-users.gif)
+
+
+## Criar um superusuario para executar os endpoints
+
+Via local
+
+```shell
+$ flask createsuperuser admin admin@admin.com teste123
+```
+
+![](./static/create-superuser.gif)
+
+
+## Excute a aplicação via docker
 
 Primeiro faço um build da minha imagem
 
@@ -31,32 +52,43 @@ Primeiro faço um build da minha imagem
 $ docker build -t api_users .
 ```
 
-Em seguida executar o container a partir da imagem criada
+Em seguida executar o container a partir da imagem criada. Altere seu `.env` e descomente a linha `; MONGODB_URI=mongodb://mongo-latest:27017/api-users` colocando o hostname do mongo `mongo-latest`. Então crie o container com o comando abaixo.
 
 ```shell
-$ docker run -itd --name flask_api_users -p 5000:5000  -e SECRET_KEY=hard-secret-key --link mongo-latest:dbserver -e MONGODB_URI=mongodb://dbserver:27017/api-users api_users
+$ docker run -itd --name users_local --env-file ./.env -p 8080:8080 --network local-containers  users
 ```
 
-## Excute a aplicação de prod via docker
+Criar superuser via docker.
 
-Essa build executa o `gunicorn` ao invés do `python application.py`
+![](./static/create-superuser-with-docker.gif)
 
-```shell
-$ docker build -t api_users_prd -f Dockerfile-prd .
-```
+Criando um usuario de exemplo
 
-Em seguida executar o container a partir da imagem criada
-
-```shell
-$ docker run -itd --name flask_api_users_prd -p 5001:5000  -e SECRET_KEY=hard-secret-key --link mongo-latest:dbserver -e MONGODB_URI=mongodb://dbserver:27017/api-users api_users_prd
-```
+![Create user example](./static/docker-create-user.gif)
 
 ## Docker compose
 
+A ser testado. Não utilize essa opção por enquanto.
+
+## Insomnia collection
+
+Pode baixar a coleção do insomnia na pasta static e importar no app
+
+![](./static/Insomnia_2023-05-11.json)
+
+## Testes
+
+```shell
+$ pytest
 ```
-$ docker compose run --rm app pip install -r requirements/dev.txt
-$ docker compose up -d --build app
+
+ou
+
+```shell
+$ make test
 ```
+
+![](./static/make-test.gif)
 
 ## Roadmap
 

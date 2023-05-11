@@ -21,3 +21,4 @@ venv/
 *.py[cod]
 *.swp
 *.log
+.config
