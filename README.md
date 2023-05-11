@@ -74,7 +74,7 @@ A ser testado. Não utilize essa opção por enquanto.
 
 Pode baixar a coleção do insomnia na pasta static e importar no app
 
-[](./static/Insomnia_2023-05-11.json)
+[Clique aqui para baixar](./static/Insomnia_2023-05-11.json)
 
 ## Testes
 
