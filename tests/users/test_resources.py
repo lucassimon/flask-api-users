@@ -108,3 +108,20 @@ class TestSignUp:
 
         assert resp.status_code == 200
         assert resp.json.get('message') == MSG_RESOURCE_CREATED.format('Usuário')
+
+    def test_responses_ok_with_cpf_masked(self, client, mongo):
+        resp = client.post(
+            self.ENDPOINT,
+            json=dict(
+                full_name='teste',
+                email='teste@teste.com',
+                password='123456',
+                confirm_password='123456',
+                cpf_cnpj='116.537.546-05',
+                date_of_birth='2010-11-12'
+            ),
+            content_type='application/json'
+        )
+
+        assert resp.status_code == 200
+        assert resp.json.get('message') == MSG_RESOURCE_CREATED.format('Usuário')
