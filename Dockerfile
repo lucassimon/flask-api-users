@@ -1,6 +1,5 @@
 FROM python:3.11-alpine as base
 ENV HOME=/home/app \
-    FLASK_APP=application.py \
     POETRY_VIRTUALENVS_PATH=/home/app/venv \
     POETRY_HOME=/home/app/poetry \
     PATH="/home/app/venv/bin:$PATH" \
@@ -27,6 +26,7 @@ RUN rm -rf /var/cache/apk/* && \
 
 # DEVLOPMENT
 FROM base as dev
+USER 1000:1000
 WORKDIR $HOME
 
 # CI

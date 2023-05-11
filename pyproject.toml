@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-flask = "2.0.0"
+flask = {extras = ["async"], version = "2.2.2"}
 flask-restful = "^0.3.9"
 python-dotenv = "^1.0.0"
 pytz = "^2023.3"
@@ -15,10 +15,14 @@ flask-mongoengine = "^1.0.0"
 marshmallow = "^3.19.0"
 bcrypt = "^4.0.1"
 flask-jwt-extended = "^4.4.4"
+pyee = "^9.0.4"
+structlog = "^23.1.0"
 
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.3.1"
+pytest-cov = "^4.0.0"
+pytest-runner = "^6.0.0"
 
 
 [tool.poetry.group.docs.dependencies]
@@ -38,5 +42,5 @@ gunicorn = "^20.1.0"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[virtualenv]
+[virtualenvs]
 create = false

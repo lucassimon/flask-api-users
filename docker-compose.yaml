@@ -3,10 +3,9 @@ services:
   test: &defaults
     build:
       context: .
-      target: dev
+      target: ci
     volumes:
-      - .:/app/
-      - dependencies:/opt/venv
+      - .:/home/app/
     command: pytest -s -vvv
     env_file:
       - ./.docker/dev.env
@@ -14,12 +13,21 @@ services:
 
   app:
     <<: *defaults
-    command: flask run --host=0.0.0.0 --port=5000
+    build:
+      context: .
+      target: dev
+    # volumes:
+    #   - .:/home/app
+    #   - ./venv:/home/app/venv
+    command: flask run --host=0.0.0.0 --port=8080
     # command: tail -f /dev/null
+    working_dir: /home/app
     ports:
-      - "5000:5000"
+      - "5000:8080"
     env_file:
       - ./.docker/dev.env
+    depends_on:
+      - mongodb
 
   ci:
     <<: *defaults
@@ -33,5 +41,14 @@ services:
         pytest
     volumes: []
 
+  mongodb:
+      image: mongo
+      ports:
+      - "27017:27017"
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
 volumes:
   dependencies: {}

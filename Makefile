@@ -5,7 +5,7 @@ GIT_CURRENT_BRANCH := ${shell git symbolic-ref --short HEAD}
 .DEFAULT: help
 
 help:
-	@echo "make clean:"
+	@echo "make clean aaaa:"
 	@echo "       Removes all pyc, pyo and __pycache__"
 	@echo ""
 	@echo "make clean-build:"

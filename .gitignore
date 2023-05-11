@@ -1,6 +1,8 @@
 build/
 __pycache__/
 *.pytest_cache/
+.local/
+.ash_history
 local_settings.py
 *.py[cod]
 *.swp
