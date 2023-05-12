@@ -56,13 +56,13 @@ $ flask createsuperuser admin admin@admin.com teste123
 Primeiro faço um build da minha imagem
 
 ```shell
-$ docker build -t api_users .
+$ docker build -t users .
 ```
 
 Em seguida executar o container a partir da imagem criada. Altere seu `.env` e descomente a linha `; MONGODB_URI=mongodb://mongo-latest:27017/api-users` colocando o hostname do mongo `mongo-latest`. Então crie o container com o comando abaixo.
 
 ```shell
-$ docker run -itd --name users_local --env-file ./.env -p 8080:8080 --network local-containers  users
+$ docker run -itd --name users_local --env-file ./.env -p 8080:8080 --network local-containers users
 ```
 
 Criar superuser via docker.
