@@ -90,3 +90,41 @@ class TestAdminUserPageList:
         ]
 
         assert data == expected
+
+    def test_response_items_paginated(self, client, auth, mongo):
+        users = UserFactory.create_batch(4)
+        headers = {"Authorization": f"Bearer {client.access_token}"}
+        url = '{}?page_size={}'.format(self.ENDPOINT.format(1), 1)
+        resp = client.get(url, content_type='application/json', headers=headers)
+        data = resp.json.get('data')
+
+        expected = [
+            {
+                "active": users[0].active,
+                "cpf_cnpj": users[0].cpf_cnpj,
+                "email": users[0].email,
+                "full_name": users[0].full_name,
+                "date_of_birth": users[0].date_of_birth,
+                "id": data[0].get("id")
+            }
+        ]
+
+        assert data == expected
+
+
+        url = '{}?page_size={}'.format(self.ENDPOINT.format(2), 1)
+        resp = client.get(url, content_type='application/json', headers=headers)
+        data = resp.json.get('data')
+
+        expected = [
+            {
+                "active": users[1].active,
+                "cpf_cnpj": users[1].cpf_cnpj,
+                "email": users[1].email,
+                "full_name": users[1].full_name,
+                "date_of_birth": users[1].date_of_birth,
+                "id": data[0].get("id")
+            }
+        ]
+
+        assert data == expected

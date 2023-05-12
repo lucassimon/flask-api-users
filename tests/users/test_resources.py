@@ -26,6 +26,7 @@ class TestSignUp:
             json={},
             content_type='application/json'
         )
+
         assert resp.status_code == 422
         assert resp.json.get('message') == 'The input data is wrong'
 

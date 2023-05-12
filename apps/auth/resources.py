@@ -24,7 +24,7 @@ from .schemas import LoginSchema
 class AuthAdminResource(MethodResource, Resource):
 
     @doc(description='Autenticar um usuário admin', tags=['Auth'])
-    @use_kwargs(LoginSchema, location=('json'))
+    @use_kwargs(LoginSchema, location=('json'), apply=False)
     @marshal_with(UserSchema)
     def post(self, *args, **kwargs):
         '''
@@ -62,7 +62,7 @@ class AuthAdminResource(MethodResource, Resource):
 
 class AuthResource(MethodResource, Resource):
     @doc(description='Autenticar um usuário/customer', tags=['Auth'])
-    @use_kwargs(LoginSchema, location=('json'))
+    @use_kwargs(LoginSchema, location=('json'), apply=False)
     @marshal_with(UserSchema)
     def post(self, *args, **kwargs):
         '''
@@ -70,7 +70,6 @@ class AuthResource(MethodResource, Resource):
         '''
         # Inicializo todas as variaveis utilizadas
         payload = request.get_json() or None
-
         try:
             output = AuthUsersCommand.run(payload, *args, **kwargs)
             # Retorno 200 o meu endpoint

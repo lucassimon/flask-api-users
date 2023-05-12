@@ -25,12 +25,11 @@ from .exceptions import UserSchemaValidationErrorException, UserMongoNotUniqueEx
 class SignUp(MethodResource, Resource):
 
     @doc(description='Registrar um usuário/customers', tags=['Customer'])
-    @use_kwargs(CreateUserInput, location=('json'))
+    @use_kwargs(CreateUserInput, location=('json'), apply=False)
     @marshal_with(CreateUserOutput)
     def post(self, *args, **kwargs):
         # Inicializo todas as variaveis utilizadas
         payload = request.get_json() or None
-
         try:
             output = CreateUserCommand.run(payload, *args, **kwargs)
             # Retorno 200 o meu endpoint
