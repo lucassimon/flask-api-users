@@ -12,11 +12,11 @@ class UserMongoMixin:
             # buscamos todos os usuários da base utilizando o paginate
             return User.objects.get(email=email)
 
-        except DoesNotExist:
-            raise UserMongoDoesNotExistException from DoesNotExist
+        except DoesNotExist as err:
+            raise UserMongoDoesNotExistException from err
 
-        except FieldDoesNotExist:
-            raise UserMongoFieldsDoesNotExistException from FieldDoesNotExist
+        except FieldDoesNotExist as err:
+            raise UserMongoFieldsDoesNotExistException from err
 
         except Exception as err:
             raise err
@@ -41,7 +41,8 @@ class UserMongoRepository(UserMongoMixin):
 class AdminMongoRepository(UserMongoMixin):
     def insert(self, data) -> None:
         try:
-            model = Admin(**data).save()
+            model = Admin(**data)
+            model.save()
             return model
         except NotUniqueError as err:
             raise UserMongoNotUniqueException from err
@@ -57,11 +58,11 @@ class AdminMongoRepository(UserMongoMixin):
             # buscamos todos os usuários da base utilizando o paginate
             return Admin.objects.get(email=email)
 
-        except DoesNotExist:
-            raise UserMongoDoesNotExistException from DoesNotExist
+        except DoesNotExist as err:
+            raise UserMongoDoesNotExistException from err
 
-        except FieldDoesNotExist:
-            raise UserMongoFieldsDoesNotExistException from FieldDoesNotExist
+        except FieldDoesNotExist as err:
+            raise UserMongoFieldsDoesNotExistException from err
 
         except Exception as err:
             raise err
@@ -72,8 +73,8 @@ class AdminMongoRepository(UserMongoMixin):
             users = User.objects()
             return Pagination(iterable=users, page=page_id, per_page=page_size)
 
-        except FieldDoesNotExist:
-            raise UserMongoFieldsDoesNotExistException from FieldDoesNotExist
+        except FieldDoesNotExist as err:
+            raise UserMongoFieldsDoesNotExistException from err
 
         except Exception as err:
             raise err
@@ -83,11 +84,11 @@ class AdminMongoRepository(UserMongoMixin):
             # buscamos todos os usuários da base utilizando o paginate
             return User.objects.get(id=user_id)
 
-        except DoesNotExist:
-            raise UserMongoDoesNotExistException from DoesNotExist
+        except DoesNotExist as err:
+            raise err
 
-        except FieldDoesNotExist:
-            raise UserMongoFieldsDoesNotExistException from FieldDoesNotExist
+        except FieldDoesNotExist as err:
+            raise UserMongoFieldsDoesNotExistException from err
 
         except Exception as err:
             raise err
@@ -97,11 +98,11 @@ class AdminMongoRepository(UserMongoMixin):
             # buscamos todos os usuários da base utilizando o paginate
             return User.objects.get(cpf_cnpj=cpf_cnpj)
 
-        except DoesNotExist:
-            raise UserMongoDoesNotExistException from DoesNotExist
+        except DoesNotExist as err:
+            raise UserMongoDoesNotExistException from err
 
-        except FieldDoesNotExist:
-            raise UserMongoFieldsDoesNotExistException from FieldDoesNotExist
+        except FieldDoesNotExist as err:
+            raise UserMongoFieldsDoesNotExistException from err
 
         except Exception as err:
             raise err
@@ -115,11 +116,11 @@ class AdminMongoRepository(UserMongoMixin):
         try:
             user = User.objects.get(email=email)
 
-        except DoesNotExist:
-            raise UserMongoDoesNotExistException from DoesNotExist
+        except DoesNotExist as err:
+            raise UserMongoDoesNotExistException from err
 
-        except MultipleObjectsReturned:
-            raise UserMongoMultipleObjectsReturnedException from MultipleObjectsReturned
+        except MultipleObjectsReturned as err:
+            raise UserMongoMultipleObjectsReturnedException from err
 
         # verifico se o id retornado na pesquisa é mesmo da minha instancia
         # informado no parâmetro
@@ -156,7 +157,6 @@ class AdminMongoRepository(UserMongoMixin):
 
         except ValidationError as err:
             raise UserMongoValidationErrorException from err
-
 
         except Exception as err:
             raise err
