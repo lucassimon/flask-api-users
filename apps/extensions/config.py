@@ -12,7 +12,7 @@ class Config:
         'host': getenv('MONGODB_URI', 'mongodb://0.0.0.0:27017/api-users'),
     }
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(
-        minutes=int(getenv('JWT_ACCESS_TOKEN_EXPIRES', 20))
+        days=int(getenv('JWT_ACCESS_TOKEN_EXPIRES', 20))
     )
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(
         days=int(getenv('JWT_REFRESH_TOKEN_EXPIRES', 30))

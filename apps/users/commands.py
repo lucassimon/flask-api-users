@@ -3,9 +3,9 @@ from typing import Any, Mapping
 import asyncio
 import click
 from flask.cli import with_appcontext
-from flask_jwt_extended import create_access_token, create_refresh_token
 
 from apps.extensions.logging import make_logger
+from apps.extensions.jwt import create_tokens
 
 from .schemas import CreateAdminInput, CreateUserInput, CreateUserOutput, UserSchema
 from .use_case import CreateUserUseCase, GetUserByCpfCnpjUseCase
@@ -58,16 +58,7 @@ class CreateUserCommand:
 
     @staticmethod
     def create_access_and_refresh_token(output):
-        token = create_access_token(identity=output["email"])
-        refresh_token = create_refresh_token(identity=output["email"])
-
-        if logger:
-            logger.info("create.user.command", message="Creating jwt tokens")
-
-        return {
-            'token': token,
-            'refresh': refresh_token
-        }
+        return create_tokens(output=output, additional_claims={'group': 'users'})
 
     @staticmethod
     def run(payload: Mapping[str, Any], *args, **kwargs: dict[str, Any]):

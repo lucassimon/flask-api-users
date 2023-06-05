@@ -1,11 +1,10 @@
 
 from typing import Any, Mapping
-import asyncio
-import click
-from flask.cli import with_appcontext
-from flask_jwt_extended import create_access_token, create_refresh_token
+
+from flask_jwt_extended import create_access_token, set_access_cookies
 
 from apps.extensions.logging import make_logger
+from apps.extensions.jwt import create_tokens
 from apps.users.repositories import UserMongoRepository, AdminMongoRepository
 from apps.users.schemas import UserSchema
 from .schemas import LoginSchema
@@ -38,16 +37,7 @@ class AuthAdminUsersCommand:
 
     @staticmethod
     def create_access_and_refresh_token(output):
-        token = create_access_token(identity=output["email"])
-        refresh_token = create_refresh_token(identity=output["email"])
-
-        if logger:
-            logger.info("auth.admin.user.command", message="Creating jwt tokens")
-
-        return {
-            'token': token,
-            'refresh': refresh_token
-        }
+        return create_tokens(output=output, additional_claims={'group': 'admin'}, logger=logger)
 
     @staticmethod
     def run(payload: Mapping[str, Any], *args, **kwargs: dict[str, Any]):
@@ -84,16 +74,11 @@ class AuthUsersCommand:
 
     @staticmethod
     def create_access_and_refresh_token(output):
-        token = create_access_token(identity=output["email"])
-        refresh_token = create_refresh_token(identity=output["email"])
+        return create_tokens(output=output, additional_claims={
+            'group': 'users',
+            'user_id': output['id'],
+        }, logger=logger)
 
-        if logger:
-            logger.info("auth.user.command", message="Creating jwt tokens")
-
-        return {
-            'token': token,
-            'refresh': refresh_token
-        }
 
     @staticmethod
     def run(payload: Mapping[str, Any], *args, **kwargs: dict[str, Any]):

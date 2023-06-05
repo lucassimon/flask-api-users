@@ -4,13 +4,24 @@ from flask import jsonify
 
 # Third
 from flask_jwt_extended import JWTManager
-
+from flask_jwt_extended import create_access_token, create_refresh_token
 # Apps
 from apps.users.models import User
 
 # Local
 from .messages import MSG_INVALID_CREDENTIALS, MSG_TOKEN_EXPIRED
 
+def create_tokens(output, additional_claims={'group': 'users'}, logger=None):
+    token = create_access_token(identity=output["email"], additional_claims=additional_claims)
+    refresh_token = create_refresh_token(identity=output["email"])
+
+    if logger:
+        logger.info("auth.user.command", message="Creating jwt tokens")
+
+    return {
+        'token': token,
+        'refresh': refresh_token
+    }
 
 def configure_jwt(app):
 
@@ -19,7 +30,10 @@ def configure_jwt(app):
 
     @jwt.additional_claims_loader
     def add_claims_to_access_token(identity):
-        pass
+        return {
+            "aud": "some_audience",
+            "foo": "bar",
+        }
 
     @jwt.expired_token_loader
     def my_expired_token_callback():

@@ -104,7 +104,7 @@ class RefreshTokenResource(Resource):
         http://flask-jwt-extended.readthedocs.io/en/latest/refresh_tokens.html
         '''
         extras = {
-            'token': create_access_token(identity=get_jwt_identity()),
+            'token': create_access_token(identity=get_jwt_identity(), additional_claims={'group': 'users'}),
         }
 
         return resp_ok(
