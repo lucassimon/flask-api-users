@@ -50,5 +50,36 @@ services:
     image: redis
     ports:
       - "6379:6379"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.0
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    environment:
+      - http.host=0.0.0.0
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+
+  graylog:
+    image: graylog/graylog
+    volumes:
+      - graylog_data:/usr/share/graylog/data
+    env_file:
+      - ./.docker/graylog/dev.env
+    restart: always
+    depends_on:
+      - mongodb
+      - elasticsearch
+    ports:
+      # Graylog web interface and REST API
+      - 12200:9000
+      # GELF TCP
+      - 12201:12201
+      # GELF UDP
+      - 12201:12201/udp
+
+
 volumes:
   dependencies: {}
+  mongo_data:
+  es_data:

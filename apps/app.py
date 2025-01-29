@@ -24,7 +24,7 @@ from apps.users.commands import createsuperuser
 def create_app(testing=False):
     app = Flask('api-users')
 
-    config_name = os.getenv("FLASK_CONFIG")
+    config_name = os.getenv("FLASK_CONFIG", "development")
 
     if testing:
         app.config.from_object(config['testing'])
